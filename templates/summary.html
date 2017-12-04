@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Summary{% endblock %}
+
+{% block sum_navbar %}
+<li class="active" id="summary"><a href="/summary/"><i class="fa fa-file-text-o fa-fw"></i>Summary</a></li>
+{% endblock %}
+
+{% block jumbotron %}
+<div class="jumbotron jumbotron-custom green" id="hide">
+    <div class="container">
+        <div style="height: 80px;">&nbsp;</div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="font-museo ta-c"><i class="fa fa-file-text-o fa-fw"></i><b>Summary </b></h1>
+                <div class="row jumbotron-search ta-c">
+                    <div class="col-md-12">
+                        <form action="/summary/" method="get">
+                            <span class="search-style">
+                                <i class="fa fa-file-text-o fa-fw search-icon"></i>
+                                <input id="summary" class="form-control form-custom" name="summary" value="{{ keyword }}" type="text" placeholder="Please input DOI or title (be complete) , DOI for advise，eg:: 10.1038/nature11003" required>
+                            </span>
+                            <span>
+                                <button type="submit" class="button-custom" title="" >Summary&nbsp;</i>
+                                </button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="height: 80px;">&nbsp;</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="show" style="display: none">
+    <div class="jumbotron jumbotron-custom green font-en">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 ta-c">
+                    {% if request.user.is_authenticated %}
+                    <i id="like" class="fa fa-id-card-o fa-6 hover-like" style="font-size: 280px" aria-hidden="true" onclick="like()"></i>
+                    {% else %}
+                    <i id="like" class="fa fa-id-card-o fa-6" style="font-size: 280px" aria-hidden="true"></i>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 ta-l">
+                    <div class="summary-facet-hint">DOI: <span id="doi"></span></div>
+                    <div class="summary-facet-hint">Publisher: <span id="publisher"></span></div>
+                    <div class="summary-facet-hint">Cited: <span id="cited"></span></div>
+                    <div class="summary-facet-hint">Author: <span id="author"></span></div>
+                    <div class="summary-facet-hint">Subject: <span id="subject"></span></div>
+                    <div class="summary-facet-hint">Link: <a href="#" target="_blank" id="link"></a></div>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span class="summary-facet-title" id="title"></span>
+                    <span class="summary-facet-subtitle">
+                        &nbsp;&nbsp;<span class="summary-facet-subtitle" id="date"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container font-en">
+        <h2 class="page-header" style="margin-bottom: 0" id="ref">Reference Network</h2>
+        <div class="row">
+            <div class="col-md-7">
+                <div>&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="ref-nail" style="width: 100%;height: 500px"></div>
+                    </div>
+                </div>
+                <!--
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="widget-custom font-en">
+                            <h4 class="title-custom">Information</h4>
+                            <p>DOI: <span class="content-custom" id="ref-doi">Loading...</span></p>
+                            <p>Title: <span class="content-custom" id="ref-title">Loading...</span></p>
+                            <p>Date: <span class="content-custom" id="ref-date">Loading...</span></p>
+                            <p>Publisher: <span class="content-custom" id="ref-publisher">Loading...</span></p>
+                            <p>Cited: <span class="content-custom" id="ref-cited">Loading...</span></p>
+                            <p>Author: <span class="content-custom" id="ref-author">Loading...</span></p>
+                            <p>Subject: <span class="content-custom" id="ref-subject">Loading...</span></p>
+                            <p>Link: <a class="content-custom" id="ref-link" href="#" target="_blank">Loading...</a></p>
+                        </div>
+                    </div>
+                </div>
+                -->
+            </div>
+            <div class="col-md-5">
+                <div>&nbsp;</div>
+                <div class="row">
+                    <div id="cit-nail" style="width: 100%;height: 200px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var doi={{ doi|safe }};
+    //alert(doi);
+    if(doi!='no' && doi!='yes') {
+        $('#hide').hide();
+        $('#show').show();
+        var ref_file = '/media/ref/' + doi.replace('/', '_') + '.json';
+        var cit_file = '/media/cit/' + doi.replace('/', '_') + '.json';
+        // 基于准备好的dom，初始化echarts实例
+        var refChart = echarts.init(document.getElementById('ref-nail'), 'shine');
+        var citChart = echarts.init(document.getElementById('cit-nail'));
+        refChart.showLoading();
+        citChart.showLoading();
+        $.getJSON(ref_file, function (json) {
+            var info_author=json['info']['author'];
+            var alist=info_author.split(',');
+            if(alist.length>3){
+                info_author=alist[0]+', '+alist[1]+', '+alist[2]+' ...'
+            }
+
+            $('#doi').html(json['info']['doi']);
+            $('#title').html(json['info']['title']);
+            $('#date').html(json['info']['date']);
+            $('#publisher').html(json['info']['publisher']);
+            $('#cited').html(json['info']['cited']);
+            $('#author').html(info_author);
+            $('#subject').html(json['info']['subject']);
+            $('#link').html(json['info']['link']);
+            $('#link').attr('href',json['info']['link']);
+
+            /*
+            $('#ref-doi').html(json['info']['doi']);
+            $('#ref-title').html(json['info']['title']);
+            $('#ref-date').html(json['info']['date']);
+            $('#ref-publisher').html(json['info']['publisher']);
+            $('#ref-cited').html(json['info']['cited']);
+            $('#ref-author').html(info_author);
+            $('#ref-subject').html(json['info']['subject']);
+            $('#ref-link').html(json['info']['link']);
+            $('#ref-link').attr('href',json['info']['link']);
+            */
+            var nums=[];
+            var subjects=[];
+
+            $.each(json.statistics.count,function (subject,num) {
+                if(num>4) {
+                    subjects.push(subject);
+                    nums.push(num);
+                }
+            });
+            ref_option = {
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                /*
+                legend: {
+                    data:['citation']
+                },
+                */
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'category',
+                        axisTick : {show: false},
+                        data : subjects
+                    }
+                ],
+                series : [
+                    {
+                        name:'citation',
+                        type:'bar',
+                        label: {
+                            normal: {
+                                show: false,
+                                position: 'inside'
+                            }
+                        },
+                        itemStyle:{
+                            normal:{
+                                color:'#64A6AE',
+                                borderColor:'#fff',
+                                borderWidth:3
+                            },
+                            emphasis:{
+                                color:'#64A6AE',
+                                borderWidth: 3,
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        data:nums
+                    }
+                ]
+            };
+            refChart.hideLoading();
+            refChart.setOption(ref_option);
+
+        });
+
+        $.getJSON(cit_file, function (json) {
+            var cit_xasis = [];
+            var cit_yaxix = [];
+            var cit_past=[];
+            var cit_cum=[];
+            var start_date=json['info']['date'];
+            var start_year=start_date.split('-')[0];
+            var syear=parseInt(start_year);
+
+            $.each(json.summary, function (year, cited) {
+                var cyear=parseInt(year);
+                if(cyear>=syear) {
+                    cit_xasis.push(year);
+                    cit_yaxix.push(cited['cited']);
+                }
+            });
+
+            citChart.hideLoading();
+            citChart.setOption(option = {
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['Citation']
+                    },
+                    xAxis: {
+                        data: cit_xasis
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            show: false
+                        }
+                    },
+
+                    series: [{
+                        name: 'Citation',
+                        type: 'line',
+                        data: cit_yaxix,
+                        stack: '引用信息',
+                        smooth:false,
+                        symbol: 'emptyCircle',
+                        symbolSize:6,
+                        sampling: 'average',
+                        itemStyle: {
+                            normal: {
+                                color: 'rgb(255, 70, 131)'
+                            }
+                        },
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(255, 158, 68)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgb(255, 70, 131)'
+                                }])
+                            }
+                        }
+                    }]
+                });
+        });
+    }
+    if(doi=='yes'){
+        alert("Crossref haven't collected the record yet!");
+    }
+</script>
+
+<script>
+function like() {
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    })
+
+    //alert('hello');
+    //alert(doi);
+    //alert(typeof(doi));
+
+    $.ajax({
+        type:"post",
+        //url:"/postRefDoi",
+        url:"/star",
+        data:{
+            source:'Summary',
+            doi:{{ doi|safe }}
+        },
+        error:function () {
+            alert("Collection Failed!");
+        },
+        success:function (ret) {
+            if(ret=='existed'){
+                alert('You have already liked it!')
+            }else{
+                alert('Successful Collection!')
+            }
+            document.getElementById('like').setAttribute('style','font-size: 280px;color:#e36209');
+        }
+    });
+}
+</script>
+{% endblock %}

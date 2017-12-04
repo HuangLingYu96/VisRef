@@ -1,0 +1,695 @@
+body{
+    padding-top: 0 !important;
+}
+
+.sign-form-custom{
+    border: 1px solid rgb(250, 251, 252) !important;
+    background-color: rgb(250, 251, 252) !important;
+    border-radius: 5px;
+    padding: 0 24px 0 24px;
+}
+
+.sign-form-custom label{
+    color:rgb(88, 96, 105) !important;
+    font-weight: 400;
+    display: block !important;
+
+}
+
+.sign-form-custom input{
+    font-size: 16px;
+    padding: 10px !important;
+    height: 46px;
+}
+
+.sign-form-custom button{
+    background-color: rgb(40, 167, 69) !important;
+    background-image: linear-gradient(-180deg, rgb(52, 208, 88) 0%, rgb(40, 167, 69) 90%) !important;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 5px 0 10px 0!important;
+}
+
+.login{
+    background-color: #F9F9F9;
+}
+
+.login-header{
+    padding-top: 32px;
+    padding-bottom: 24px;
+    background-image: url('/static/pic/logo.jpg');
+    background-size: 5%;
+    background-position: 50% 75%;
+    background-repeat: no-repeat;
+    height: 100%;
+    margin: auto;
+    max-height: 461px;
+    max-width: 1034px;
+    width: 100%;
+}
+
+.login-word{
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 300;
+    text-align: center;
+}
+
+.login-form-custom{
+    border: 1px solid rgb(216, 222, 226); !important;
+    background-color: white;
+    border-radius: 5px;
+    padding: 0 24px 20px 24px;
+    margin:auto;
+}
+
+.login-form-custom label{
+    color:black !important;
+    font-weight: 600;
+    display: block !important;
+
+}
+
+.login-form-custom input{
+    font-size: 14px;
+    padding: 8px 10px 8px 10px !important;
+    height: 34px;
+}
+
+.login-form-custom button{
+    background-color: rgb(40, 167, 69) !important;
+    background-image: linear-gradient(-180deg, rgb(52, 208, 88) 0%, rgb(40, 167, 69) 90%) !important;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 20px 0 10px 0!important;
+}
+
+.login-footer{
+    width: 340px;
+    border: 1px solid rgb(216, 222, 226); !important;
+    border-radius: 5px;
+    margin: auto;
+}
+
+.login-footer p{
+    text-align: center;
+    padding: 15px 20px 15px 20px;
+}
+
+.navbar-green {
+  background-color: rgb(31, 166, 122);
+  border-color: rgb(27, 146, 108);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+}
+.navbar-green .navbar-brand {
+  color: white;
+}
+.navbar-green .navbar-brand:hover,
+.navbar-green .navbar-brand:focus {
+  color: #fff;
+  background-color: transparent;
+}
+.navbar-green .navbar-text {
+  color: rgb(176, 221, 206);
+}
+
+.navbar-green .navbar-nav >li >span >a,
+.navbar-green .navbar-nav > li > a {
+    font-size: 16px !important;
+  color: rgb(176, 221, 206);
+}
+.navbar-green .navbar-nav > li > a:hover,
+.navbar-green .navbar-nav > li > a:focus {
+  color: #fff;
+  background-color: transparent;
+}
+
+.navbar-green .navbar-nav > .active > a,
+.navbar-green .navbar-nav > .active > a:hover,
+.navbar-green .navbar-nav > .active > a:focus {
+  color: #fff;
+  background-color: rgb(27, 146, 108);
+}
+.navbar-green .navbar-nav > .disabled > a,
+.navbar-green .navbar-nav > .disabled > a:hover,
+.navbar-green .navbar-nav > .disabled > a:focus {
+  color: rgb(176, 221, 206);
+  background-color: transparent;
+}
+.navbar-green .navbar-toggle {
+  border-color: rgb(27, 146, 108);
+}
+.navbar-green .navbar-toggle:hover,
+.navbar-green .navbar-toggle:focus {
+  background-color: rgb(27, 146, 108);
+}
+.navbar-green .navbar-toggle .icon-bar {
+  background-color: #fff;
+}
+.navbar-green .navbar-collapse,
+.navbar-green .navbar-form {
+  border-color: rgb(27, 146, 108);
+}
+.navbar-green .navbar-nav > .open > a,
+.navbar-green .navbar-nav > .open > a:hover,
+.navbar-green .navbar-nav > .open > a:focus {
+  color: #fff;
+  background-color: rgb(27, 146, 108);
+}
+@media (max-width: 767px) {
+  .navbar-green .navbar-nav .open .dropdown-menu > .dropdown-header {
+    border-color: rgb(27, 146, 108);
+  }
+  .navbar-green .navbar-nav .open .dropdown-menu .divider {
+    background-color: rgb(27, 146, 108);
+  }
+  .navbar-green .navbar-nav .open .dropdown-menu > li > a {
+    color: rgb(176, 221, 206);
+  }
+  .navbar-green .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-green .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #fff;
+    background-color: transparent;
+  }
+  .navbar-green .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-green .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-green .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: rgb(27, 146, 108);
+  }
+  .navbar-green .navbar-nav .open .dropdown-menu > .disabled > a,
+  .navbar-green .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+  .navbar-green .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: rgb(31, 166, 122);
+    background-color: transparent;
+  }
+}
+.navbar-green .navbar-link {
+  color: rgb(176, 221, 206);
+}
+.navbar-green .navbar-link:hover {
+  color: #fff;
+}
+.navbar-green .btn-link {
+  color: rgb(176, 221, 206);
+}
+.navbar-green .btn-link:hover,
+.navbar-green .btn-link:focus {
+  color: #fff;
+}
+.navbar-green .btn-link[disabled]:hover,
+fieldset[disabled] .navbar-green .btn-link:hover,
+.navbar-green .btn-link[disabled]:focus,
+fieldset[disabled] .navbar-green .btn-link:focus {
+  color: rgb(31, 166, 122);
+}
+.navbar-green {
+  background-image: -webkit-linear-gradient(top, rgb(31, 166, 122) 0%, rgb(31, 166, 122) 100%);
+  background-image:      -o-linear-gradient(top, rgb(31, 166, 122) 0%, rgb(31, 166, 122) 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(31, 166, 122)), to(rgb(31, 166, 122)));
+  background-image:         linear-gradient(to bottom, rgb(31, 166, 122) 0%, rgb(31, 166, 122) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgb(31, 166, 122)', endColorstr='rgb(31, 166, 122)', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-repeat: repeat-x;
+}
+.navbar-green .navbar-nav > .active > a {
+  background-image: -webkit-linear-gradient(top, rgb(27, 146, 108) 0%, rgb(27, 146, 108) 100%);
+  background-image:      -o-linear-gradient(top, rgb(27, 146, 108) 0%, rgb(27, 146, 108) 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(27, 146, 108)), to(rgb(27, 146, 108)));
+  background-image:         linear-gradient(to bottom, rgb(27, 146, 108) 0%, rgb(27, 146, 108) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgb(27, 146, 108)', endColorstr='rgb(27, 146, 108)', GradientType=0);
+  background-repeat: repeat-x;
+  -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, .25);
+          box-shadow: inset 0 3px 9px rgba(0, 0, 0, .25);
+}
+.navbar-green .navbar-brand,
+.navbar-green .navbar-nav > li > a {
+  text-shadow: 0 -1px 0 rgba(176, 221, 206,0.25);
+}
+
+.navbar-nav >li >span >a{
+    line-height: 20px;
+    padding: 15px 5px 15px 5px;
+    text-decoration: none;
+}
+
+.nav >li >span {
+    position: relative;
+    display: block;
+    padding: 15px 15px;
+}
+
+.jumbotron-custom{
+    /*
+    font-family: proxima-nova-sc,"Microsoft YaHei","Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    */
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;;
+    margin-bottom: 0;
+    color: white;
+}
+
+.green{
+    background-color: rgb(31, 166, 122) !important;
+}
+
+.deep-green{
+    background-color: rgb(27, 146, 108);
+}
+
+.grey{
+    background-color: rgb(235, 235, 235);;
+}
+
+.jumbotron-custom h1{
+    font-size: 100px;
+    text-shadow: 4px 3px 0px rgb(29, 157, 116), 9px 8px 0px rgba(0, 0, 0, 0.15);
+    text-decoration-color: white;
+}
+
+.jumbotron-custom h2{
+    font-size: 90px;
+    text-shadow: 4px 3px 0px rgb(29, 157, 116), 9px 8px 0px rgba(0, 0, 0, 0.15);
+    text-decoration-color: white;
+}
+
+.jumbotron-custom p{
+    color: rgb(199, 231, 220);
+    font-size: 32px;
+    font-weight: lighter;
+    margin: 20px 0 20px 0;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.15);
+}
+
+.jumbotron-custom a{
+    border-bottom-style: dotted;
+    border-bottom-width:1px;
+    color: rgb(210, 235, 227);
+    text-decoration: none;
+}
+
+.jumbotron-search{
+    padding: 22px 0 17px 0;
+}
+
+.content-underlay{
+    margin-bottom: -180px;
+    border-bottom: 1px solid #1b926c;
+    padding-bottom: 100px;
+    background-color: #1fa67a;
+    position: relative;
+}
+
+.search-section{
+    z-index: 2;
+    position: relative;
+    border-radius: 6px;
+    padding: 5px 40px 22px 40px;
+    background-color: white;
+    margin-top: 40px;
+}
+/*
+.page-header {
+    padding-bottom: 9px;
+    margin: 22px 0 20px 0;
+    border-bottom: 1px solid #eee;
+}
+*/
+
+.vis-search{
+    position: relative;
+    font-size: 18px;
+    padding-top: 40px;
+    margin: -20px auto 0;
+}
+
+.vis-search label {
+    position: absolute;
+    left: 17px;
+    top: 51px;
+}
+
+.vis-search .vis-input{
+    padding-left: 43px;
+    padding-right: 43px;
+    border-radius: 23px;
+}
+
+.vis-search .vis-button{
+    padding-left: auto;
+    padding-right: auto;
+    border-radius: 10px;
+}
+
+.input-lg {
+    height: 46px;
+    padding: 10px 16px;
+    font-size: 14px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+}
+
+.button-lg {
+    height: 34px;
+    padding: 0px 16px;
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+}
+
+#ref-pic{
+    border: 2px solid rgb(238, 238, 238);
+    border-radius: 6px;
+}
+
+.cit-widget-custom,
+.widget-custom{
+    padding: 21px 30px;
+    margin-bottom: 35px;
+    border-radius: 23px;
+}
+
+.cit-widget-custom .title-custom,
+.widget-custom .title-custom {
+  margin-top: 0;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #ebebeb;
+  margin-bottom: 21px;
+  position: relative;
+}
+
+.widget-custom .title-custom:after {
+  content: "";
+  width: 90px;
+  height: 1px;
+  background: #e67e22;
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+}
+.widget-custom .content-custom{
+    color: #e67e22;
+}
+
+.cit-widget-custom .title-custom:after {
+  content: "";
+  width: 90px;
+  height: 1px;
+  background: #2AABD2;
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+}
+.cit-widget-custom .content-custom{
+    color: #2AABD2;
+}
+
+.cit-details-facet-title{
+    font-size: 20px;
+    color: black;
+    font-weight: 500
+}
+
+.cit-details-facet-subtitle{
+    font-size: 14px;
+    color: rgb(119, 119, 119);
+    text-shadow: 0px 1px 0px rgb(255, 255, 255)
+}
+
+.ref-details-facet-hint,
+.cit-details-facet-hint{
+    font-size: 14px;
+    color: rgb(119, 119, 119);
+    font-weight: lighter;
+    margin: 20px 0 20px 0;
+    text-shadow: 0px 1px 0px rgb(255, 255, 255)
+}
+
+.ref-details-facet-hint span,
+.cit-details-facet-hint span{
+    color:#e67e22;
+}
+
+.ref-details-facet-hint a,
+.cit-details-facet-hint a{
+    color:#e67e22;
+    text-decoration: none;
+}
+
+.summary-facet-hint{
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    font-weight: lighter;
+    margin: 20px 0 20px 0;
+}
+
+.summary-facet-hint span{
+    color:rgb(199, 231, 220);
+}
+
+.summary-facet-hint a{
+    color:rgb(199, 231, 220);
+    text-decoration: none;
+}
+
+.summary-facet-title{
+    font-size: 30px;
+    color: white;
+    font-weight: 500
+}
+
+.summary-facet-subtitle{
+    font-size: 14px;
+    color: white;
+}
+
+.sign-facet-li{
+    color: rgb(88, 96, 105);
+    padding: 3px 20px 0 20px;
+}
+
+.usr-profile-nav{
+    background-color: #fff;
+    border-bottom: solid 1px #d1d5da;
+}
+
+.underline-nav{
+    display: flex;
+}
+
+.underline-nav-item{
+    padding: 16px 8px;
+    margin-right: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #586069;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+}
+
+.underline-nav .selected{
+    font-weight: 600;
+    color: #24292e;
+    border-bottom-color: #e36209;
+}
+
+.underline-nav a{
+    text-decoration: none;
+}
+
+.usr-frame{
+    padding:16px 0 16px 0;
+    color: rgb(102, 102, 102);
+    font-weight: 300;
+    font-size: 32px;
+}
+
+.stars-list{
+    margin-top: 24px;
+}
+
+.textbox-custom{
+    padding: 16px;
+    border-width: 1px;
+    border-color: rgb(209, 213, 218);
+    border-radius: 3px;
+    border-style: solid;
+}
+
+.textbox-custom .text-title{
+    color: #1b926c;
+    font-weight: 600;
+}
+
+.textbox-custom .text-content{
+    margin: 8px 0 16px 0;
+    color:rgb(88, 96, 105);
+    font-size: 12px;
+}
+
+.textbox-custom .text-content i{
+    color:#1b926c ;
+}
+
+.hover-class:hover{
+    cursor: pointer;
+}
+
+.col-green{
+    color: rgb(27, 146, 108);
+}
+
+.hover-like:hover{
+    cursor: pointer;
+    color: #e67e22;
+}
+
+#footer{
+    background-color: #1fa67a;
+    /*
+    border-top: 1px solid #1b926c;
+    */
+    color: #a5d8c7;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+    /*
+    margin-top: 60px;
+    */
+}
+
+#footer .container {
+    padding-top: 50px;
+    padding-bottom: 55px;
+}
+
+#footer a{
+    border-bottom-style: dotted;
+    border-bottom-width:1px;
+    color: rgb(210, 235, 227);
+}
+
+.ta-c{text-align: center}
+.ta-l{text-align: left}
+.ta-r{text-align: right}
+
+.font-en{
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+}
+
+@font-face {
+    font-family: proxima-nova-sc;
+    font-weight: 300;
+    src:url('/static/font/proximanova.ttf');
+}
+
+@font-face {
+    font-family: museo;
+    font-weight: 300;
+    src: url('/static/font/museo.otf');
+}
+
+.font-proxima{
+    font-family: proxima-nova-sc !important;
+}
+
+.font-museo{
+    font-family: museo !important;
+}
+
+.home-section{
+    margin-top: 40px;
+}
+
+.lead{
+    font-size: 26px;
+    line-height: 36px;
+}
+
+.home-section .row{
+    margin-bottom: 22px;
+}
+
+.home-section .row .col-md-4{
+    padding: 0 15px 0 15px;
+}
+
+.home-section .row a{
+    border-bottom-style: dotted;
+    border-bottom-width:1px;
+    color: #3c3c3c;
+    text-decoration: none;
+    font-family: museo;
+}
+
+.search-param{
+    margin: 5px 75px 10px 75px;
+    font-size: 18px;
+    font-family: proxima-nova-sc;
+    border-bottom: 1px dotted #e67e22;
+}
+
+.search-hint{
+    margin-bottom: 5px;
+}
+
+.page-header {
+  padding-bottom: 9px;
+  margin: 40px 0 20px;
+  border-bottom: 1px solid #1fa67a !important;
+}
+
+.vis-banner-control{
+    background-image: none !important;
+    color: #1fa67a !important;
+}
+
+.nav-tabs > li.active > a {
+    background-color: rgb(245,245,245) !important;
+}
+
+.sum-param{
+    margin: 5px 120px 10px 120px;
+    font-size: 18px;
+    font-family: proxima-nova-sc;
+    border-bottom: 1px dotted #e67e22;
+}
+
+.indiv-hr{
+    border-color: rgb(66, 139, 202) !important;
+}
+
+.search-style{
+    position: relative;
+    width:50%;
+}
+
+.search-icon{
+    position: absolute;
+    bottom: 2px;
+    right:10px;
+    color: #555;
+}
+
+.form-custom{
+    display: inline;
+    width: 60%;
+    height: 40px;
+    padding: 9px 7px;
+    font-size: 14px;
+    line-height: 19.25px;
+    color: #555;
+    border: 1px solid #1b926c;
+    border-radius: 0px;
+}
+
+.button-custom{
+    width: 10%;
+    height: 40px;
+    padding: 9px 12px;
+    font-size: 14px;
+    line-height: 19.25px;
+    color: white;
+    background-color: rgb(27, 146, 108);
+    border:1px solid rgb(23, 126, 93);
+    border-radius: 0px;
+    margin-left: -5px;
+}

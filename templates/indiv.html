@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block  title %}Personal Center{% endblock %}
+
+{% block jumbotron %}
+    <div class="container">
+        <div>&nbsp;</div>
+        <div class="row font-en">
+            <div class="col-md-1"></div>
+
+            <div class="col-md-10">
+                <ul id="starTab" class="nav nav-tabs">
+                    <li id="id_star"class="active">
+                        <a href="#star" data-toggle="tab">
+                             Star
+                        </a>
+                    </li>
+                    <li id="id_star_summary" class=""><a href="#star_summary" data-toggle="tab">Summary</a></li>
+                    <li id="id_star_search" class=""><a href="#star_search" data-toggle="tab">Search</a></li>
+                    <li id="id_star_ref" class=""><a href="#star_ref" data-toggle="tab">Reference</a></li>
+                    <li id="id_star_cit" class=""><a href="#star_cit" data-toggle="tab">Citation</a></li>
+                </ul>
+                <div id="starTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="star">
+                        <div class="stars-list">
+                        <div class="textbox-custom">
+                            {% for index,content in results.total.items %}
+
+                                    <div class="text-title">{{ content.doi }}</div>
+                                    <div class="text-content">{{ content.title }}</div>
+                                    <div class="text-content">创建于: {{ content.time }}</div>
+                                    <div class="text-content"><i class="fa fa-circle" aria-hidden="true"></i>{{ content.source }}</div>
+                                    <hr class="indiv-hr">
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="star_summary">
+                        <div class="stars-list">
+                        <div class="textbox-custom">
+                            {% for index,content in results.Summary.items %}
+
+                                    <div class="text-title">{{ content.doi }}</div>
+                                    <div class="text-content">{{ content.title }}</div>
+                                    <div class="text-content">创建于: {{ content.time }}</div>
+                                    <div class="text-content"><i class="fa fa-circle" aria-hidden="true"></i>{{ content.source }}</div>
+                                    <hr class="indiv-hr">
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="star_search">
+                        <div class="stars-list">
+                        <div class="textbox-custom">
+                            {% for index,content in results.Search.items %}
+
+                                    <div class="text-title">{{ content.doi }}</div>
+                                    <div class="text-content">{{ content.title }}</div>
+                                    <div class="text-content">创建于: {{ content.time }}</div>
+                                    <div class="text-content"><i class="fa fa-circle" aria-hidden="true"></i>{{ content.source }}</div>
+                                    <hr class="indiv-hr">
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="star_ref">
+                        <div class="stars-list">
+                        <div class="textbox-custom">
+                            {% for index,content in results.Ref.items %}
+
+                                    <div class="text-title">{{ content.doi }}</div>
+                                    <div class="text-content">{{ content.title }}</div>
+                                    <div class="text-content">创建于: {{ content.time }}</div>
+                                    <div class="text-content"><i class="fa fa-circle" aria-hidden="true"></i>{{ content.source }}</div>
+                                    <hr class="indiv-hr">
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="star_cit">
+                        <div class="stars-list">
+                        <div class="textbox-custom">
+                            {% for index,content in results.Cit.items %}
+
+                                    <div class="text-title">{{ content.doi }}</div>
+                                    <div class="text-content">{{ content.title }}</div>
+                                    <div class="text-content">创建于: {{ content.time }}</div>
+                                    <div class="text-content"><i class="fa fa-circle" aria-hidden="true"></i>{{ content.source }}</div>
+                                    <hr class="indiv-hr">
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div>&nbsp;</div>
+    </div>
+
+<script>
+    var cat={{ cat|safe }};
+    var active_id='id_'+cat;
+    $('#id_star').attr('class','');
+    $('#id_star_summary').attr('class','');
+    $('#id_star_search').attr('class','');
+    $('#id_star_ref').attr('class','');
+    $('#id_star_cit').attr('class','');
+    document.getElementById(active_id).setAttribute('class','active');
+
+    $('#star').attr('class','tab-pane fade');
+    $('#star_summary').attr('class','tab-pane fade');
+    $('#star_search').attr('class','tab-pane fade');
+    $('#star_ref').attr('class','tab-pane fade');
+    $('#star_cit').attr('class','tab-pane fade');
+    document.getElementById(cat).setAttribute('class','tab-pane fade in active');
+</script>
+{% endblock %}

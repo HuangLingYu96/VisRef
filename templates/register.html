@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block header %}
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
+            <div style="margin: 0;padding: 0;display: inline">
+                    &nbsp;
+            </div>
+            <h1 class="font-museo"><b>VisRef&nbsp;</b></h1>
+            <p class="font-proxima">Visualization of </p>
+            <p class="font-proxima">References & Citations</p>
+            <p class="font-proxima" style="font-size: 14px"><a href="#">Github</a> &nbsp; · &nbsp; by <a href="#">Huang Lingyu</a></p>
+        </div>
+        <div class="col-md-5 sign-form-custom">
+            <div style="margin: 0;padding: 0;display: inline">
+                    &nbsp;
+            </div>
+            <form method='post' accept-charset="UTF-8">
+                {% csrf_token %}
+                <dl class="form-group" style="margin-top: 0;">
+                    <dt>
+                        <label style="margin-bottom: 5px;" for="username">Username</label>
+                    </dt>
+                    <dd>
+                        <input id="username" class="form-control" name="username" placeholder="Pick a username" type="text" required>
+                    </dd>
+                </dl>
+                <dl class="form-group" style="margin-top: 0;">
+                    <dt>
+                        <label style="margin-bottom: 5px;" for="password">Password</label>
+                    </dt>
+                    <dd>
+                        <input id="password" class="form-control" name="password" placeholder="Pick a password" type="password" required>
+                    </dd>
+                </dl>
+                <dl class="form-group" style="margin-top: 0;">
+                    <dt>
+                        <label style="margin-bottom: 5px;" for="email">Email</label>
+                    </dt>
+                    <dd>
+                        <input id="email" class="form-control" name="email" placeholder="Pick a email" type="email" required>
+                    </dd>
+                </dl>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Sign up for VisualRef</button>
+                <div>&nbsp;</div>
+            </form>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <div>&nbsp;</div>
+
+<script>
+    var info={{ info|safe }};
+    if(info=='existed'){
+        alert('用户名已经存在！');
+    }
+    if(info=='error'){
+        alert('输入不合法！请重试！')
+    }
+</script>
+{% endblock %}

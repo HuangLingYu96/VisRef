@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Help{% endblock %}
+
+{% block help_navbar %}
+    <li class="active" id="dropdown-menu-help"><a href="/help/"><i class="fa fa-flag-o fa-fw"></i>Help</a></li>
+{% endblock %}
+
+{% block header %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="font-museo ta-l"><i class="fa fa-flag-o fa-fw"></i><b>How to use VisRef </b></h1>
+            <p class="font-proxima ta-c" style="font-size: 18px"><a href="#vis_serv">Visualization</a> &nbsp;· &nbsp; <a href="#sea_serv">Search</a> &nbsp; · &nbsp;&nbsp;<a href="#sum_serv">Summary</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron font-museo" style="background-color: rgb(245,245,245)">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="page-header" id="vis_serv">可视化服务</h2>
+                    <h4>分布于visualization页面，见上方导航栏</h4>
+                    <h4>提供两种可视化服务，ref可视化（引用可视化）和cit可视化（引证可视化）</h4>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <section class="vis-search">
+                                <label for="ref-input"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only">搜索图标</span></label>
+                                <input id="ref-input" class="form-control input-lg vis-input"  autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1" disabled="disabled">
+                            </section>
+                        </div>
+                    </div>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <h4>在输入框中按照提示输入，统一建议输入DOI号，点击右方按钮便可以预览结果</h4>
+                    <h4>对于尚未进行过可视化的文献，此服务速度很慢，ref可视化需要等待约3分半钟，cit可视化需要等待约半分钟</h4>
+                    <h4>示例说明详见visualization页面</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="page-header" id="sea_serv">搜索服务</h2>
+                    <h4>分布于home，search，visualization页面，有明显的输入提示框和绿色按钮</h4>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-bottom: 10px !important;">
+                                <input id="search" class="form-control" name="search" value="{{ keyword }}" type="text" disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success btn-block" title="" >点击搜索&nbsp;<i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <h4>搜索结果显示如下：</h4>
+                    <section class="search-section" style="background-color: rgb(238,238,238) !important;">
+                        <h2 class="page-header"><b>“medical”</b>的搜索结果</h2>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row"><div class="col-md-12"><a href="javascript:void(0);">Medical Glossary </a></div></div>
+                                <div class="row"><div class="col-md-12">10.1002/9781118562147.oth3</div></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                            <b>Chapter</b>&nbsp;published&nbsp;
+                                            <b>8 Mar 2013</b>&nbsp;
+                                            on pages&nbsp;<b>401</b>&nbsp;
+                                            to&nbsp;<b>406</b>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2"><a href="javascript:void(0);">&gt;&gt;Summary</a></div>
+                            <div class="col-md-2"><i id="10.1002/9781118562147.oth3" class="fa fa-star hover-like" aria-hidden="true" style="color: #d1d5da"></i></div>
+                        </div>
+                    </section>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <h4>点击标题可以跳转到文献所在页面，点击summary可以查看文献概要信息，登录状态下可以点击星星进行收藏</h4>
+                    <h4>参数说明详见search页面</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="page-header" id="sum_serv">概要服务</h2>
+                    <h4>分布于summary页面，见上方导航栏</h4>
+                    <h4>概要服务集成了简单的ref可视化服务和cit可视化服务</h4>
+                    <h4>此服务中的ref可视化仅提供一层引用，cit可视化仅提供citation的年度趋势变化</h4>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-bottom: 10px !important;">
+                                <input id="search" class="form-control" name="search" value="{{ keyword }}" type="text" disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success btn-block" title="" >Summary&nbsp;<i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h6 style="font-size: 8px !important;">&nbsp;</h6>
+                    <h4>在输入框中按照提示输入，统一建议输入DOI号，点击右方按钮便可以得到结果</h4>
+                    <h4>示例说明详见summary页面</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

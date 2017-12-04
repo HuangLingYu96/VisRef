@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization |Citation{% endblock %}
+
+{% block visual_navbar %}
+    <li class="dropdown active" id="visualization"><a href="/vis/" class="dropdown-toggle disabled" data-toggle="dropdown">
+        <i class="fa fa-television fa-fw"></i>Visualization
+        <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li class=""id="vis-ref"><a href="/vis/#ref">Reference</a></li>
+            <li class="" id="vis-cit"><a href="/vis/#cit">Citation</a></li>
+        </ul>
+    </li>
+{% endblock %}
+
+{% block jumbotron %}
+    <div class="jumbotron jumbotron-custom grey font-en">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 ta-c">
+                    {% if request.user.is_authenticated %}
+                    <i id="cit-like" class="fa fa-id-card-o fa-6 col-green hover-like" style="font-size: 280px" aria-hidden="true" onclick="like()"></i>
+                    {% else %}
+                    <i class="fa fa-id-card-o fa-6" style="color:rgb(27, 146, 108);font-size: 280px" aria-hidden="true"></i>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 ta-l">
+                    <div class="cit-details-facet-hint">DOI: <span id="cit_doi"></span></div>
+                    <div class="cit-details-facet-hint">Publisher: <span id="cit_publisher"></span></div>
+                    <div class="cit-details-facet-hint">Cited: <span id="cit_cited"></span></div>
+                    <div class="cit-details-facet-hint">Author: <span id="cit_author"></span></div>
+                    <div class="cit-details-facet-hint">Subject: <span id="cit_subject"></span></div>
+                    <div class="cit-details-facet-hint">Link: <a href="#" target="_blank" id="cit_link"></a></div>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span class="cit-details-facet-title" id="cit_title"></span>
+                    <span class="cit-details-facet-subtitle">
+                        &nbsp;&nbsp;<span id="cit_date"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container font-en">
+        <h2 class="page-header">Citation&nbsp;&nbsp;&nbsp;<span style="font-size: 12px;color: rgb(175, 175, 175)">from Baidu Scholar</span></h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="main_a" style="width: 100%;height:250px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container font-en">
+        <h2 class="page-header"><span style="font-size: 14px">Citation Counts Top &nbsp;<b>50</b></span></h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="info_list">
+                    <div class="row">
+                        <div class="col-md-11">
+                            <div id="title"><a href="#">doi</a></div>
+                        </div>
+                        <div class="col-md-1">
+                            <div><a href="#">details</a></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">title</div>
+                        <div class="col-md-3">cited</div>
+                        <div class="col-md-1">year</div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 ta-c">
+                <ul class="pagination">
+                    <li class="active" id="p1"><a href="javascript:void(0);" onclick="page(1)">1</a></li>
+                    <li id="p2"><a href="javascript:void(0);" onclick="page(2)">2</a></li>
+                    <li id="p3"><a href="javascript:void(0);" onclick="page(3)">3</a></li>
+                    <li id="p4"><a href="javascript:void(0);" onclick="page(4)">4</a></li>
+                    <li id="p5"><a href="javascript:void(0);" onclick="page(5)">5</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    //列表
+    var sd = {{ cit_doi|safe }};
+    var cit_file='/media/cit/'+sd.replace('/','_')+'.json';
+    var myChart_a=echarts.init(document.getElementById('main_a'),'shine');
+    //var myChart_b=echarts.init(document.getElementById('main_b'),'shine');
+    myChart_a.showLoading();
+    //myChart_b.showLoading();
+    $.getJSON(cit_file,function (json) {
+        $('#cit_doi').html(json['info']['doi']);
+        $('#cit_title').html(json['info']['title']);
+        $('#cit_publisher').html(json['info']['publisher']);
+        $('#cit_date').html(json['info']['date']);
+        $('#cit_cited').html(json['info']['cited']);
+        $('#cit_author').html(json['info']['author']);
+        $('#cit_subject').html(json['info']['subject']);
+        $('#cit_link').html(json['info']['link']);
+        $('#cit_link').attr('href',json['info']['link']);
+
+        myChart_a.hideLoading();
+        var cit_xasis = [];
+        var cit_yaxix = [];
+        var cit_past=[];
+        var cit_cum=[];
+        var publish_date=json['info']['date'];
+        var start_year_str=publish_date.split('-')[0];
+        var start_year=parseInt(start_year_str);
+
+        $.each(json.summary, function (year, cited) {
+            var num_year=parseInt(year);
+            if(num_year>=start_year) {
+                cit_xasis.push(year);
+                cit_yaxix.push(cited['cited']);
+                cit_cum.push(cited['total']);
+                var past=cited['total']-cited['cited'];
+                cit_past.push(past);
+            }
+        });
+        myChart_a.setOption(option = {
+            title: {
+                text: ''
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data: ['Accumulation', 'Citation', 'Total']
+            },
+            xAxis: {
+                data: cit_xasis
+            },
+            yAxis: {
+                type: 'value',
+                splitLine: {
+                    show: false
+                }
+            },
+            dataZoom: [{
+                start: 0
+            }, {
+                type: 'inside'
+            }],
+            series: [{
+                name: 'Accumulation',
+                type: 'bar',
+                data: cit_past,
+                stack: '引用信息',
+            }, {
+                name: 'Citation',
+                type: 'bar',
+                data: cit_yaxix,
+                stack: '引用信息',
+            }, {
+                name: 'Total',
+                type: 'line',
+                data: cit_cum,
+                stack: '总信息',
+            }]
+        });
+
+        //myChart_b.hideLoading();
+        var year=[];
+        var append_html='';
+        $.each(json.details,function (num,info) {
+            if(num>=0 && num<10) {
+                if (info['doi'] != 'Unknown') {
+                    var link = 'https://doi.org/' + info['doi'];
+                    var sum = '/summary/?summary=' + info['doi'];
+                    var tmp_html = '<div class="row"><div class="col-md-10"><div id="title"><a target="_blank" href="' + link + '">' + info['title'] + '</a></div></div>'
+                        + '<div class="col-md-2"><div><a target="_blank" href="' + sum + '">>>Summary</a></div></div></div>'
+                        + '<div class="row"><div class="col-md-8">' + info['info'] + '</div><div class="col-md-3">cited:' + info['cited'] + '</div>'
+                        + '<div class="col-md-1">' + info['year'] + '</div></div>'
+                        + '<hr>';
+                    append_html += tmp_html;
+                } else {
+                    var tmp_html = '<div class="row"><div class="col-md-10"><div id="title">' + info['title'] + '</div></div>'
+                        + '<div class="col-md-1"></div></div>'
+                        + '<div class="row"><div class="col-md-8">' + info['info'] + '</div><div class="col-md-3">cited:' + info['cited'] + '</div>'
+                        + '<div class="col-md-1">' + info['year'] + '</div></div>'
+                        + '<hr>';
+                    append_html += tmp_html;
+                }
+            }
+        });
+        $('#info_list').empty();
+        $('#info_list').append(append_html);
+    });
+
+</script>
+
+<script type="text/javascript">
+function page(page_num) {
+    $('#p1').attr('class','');
+    $('#p2').attr('class','');
+    $('#p3').attr('class','');
+    $('#p4').attr('class','');
+    $('#p5').attr('class','');
+
+    var s='#p'+page_num.toString();
+    //alert(s);
+    $(s).attr('class','active');
+
+    var start=0;
+    var end=0;
+    if(page_num==1){
+        start=0;
+    }else{
+        start=(page_num-1)*10;
+    }
+    end=(page_num)*10;
+    $.getJSON(cit_file,function (json) {
+        var append_html='';
+        $.each(json.details,function (num,info) {
+            if(start<=num && num<end) {
+                if (info['doi'] != 'Unknown') {
+                    var link = 'https://doi.org/' + info['doi'];
+                    var sum = '/summary/?summary=' + info['doi'];
+                    var tmp_html = '<div class="row"><div class="col-md-10"><div id="title"><a target="_blank" href="' + link + '">' + info['title'] + '</a></div></div>'
+                        + '<div class="col-md-2"><div><a target="_blank" href="' + sum + '">>> Summary</a></div></div></div>'
+                        + '<div class="row"><div class="col-md-8">' + info['info'] + '</div><div class="col-md-3">cited:' + info['cited'] + '</div>'
+                        + '<div class="col-md-1">' + info['year'] + '</div></div>'
+                        + '<hr>';
+                    append_html += tmp_html;
+                } else {
+                    var tmp_html = '<div class="row"><div class="col-md-10"><div id="title">' + info['title'] + '</div></div>'
+                        + '<div class="col-md-1"></div></div>'
+                        + '<div class="row"><div class="col-md-8">' + info['info'] + '</div><div class="col-md-3">cited:' + info['cited'] + '</div>'
+                        + '<div class="col-md-1">' + info['year'] + '</div></div>'
+                        + '<hr>';
+                    append_html += tmp_html;
+                }
+            }
+        });
+        $('#info_list').empty();
+        $('#info_list').append(append_html);
+    });
+}
+</script>
+
+<script>
+function like() {
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+    //alert('hello');
+    //alert(doi);
+    //alert(typeof(doi));
+
+    $.ajax({
+        type:"post",
+        //url:"/postRefDoi",
+        url:"/star",
+        data:{
+            source:'Cit',
+            doi:sd
+        },
+        error:function () {
+            alert("Collection Failed!");
+        },
+        success:function (ret) {
+            if(ret=='existed'){
+                alert('You have already liked it!')
+            }else{
+                alert('Successful Collection!')
+            }
+            document.getElementById('cit-like').setAttribute('style','color:#e36209;font-size:280px');
+        }
+    });
+}
+</script>
+{% endblock %}

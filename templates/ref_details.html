@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization |Reference{% endblock %}
+
+{% block visual_navbar %}
+    <li class="dropdown active" id="visualization"><a href="/vis/" class="dropdown-toggle disabled" data-toggle="dropdown">
+        <i class="fa fa-television fa-fw"></i>Visualization
+        <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li class=""id="vis-ref"><a href="/vis/#ref">Reference</a></li>
+            <li class="" id="vis-cit"><a href="/vis/#cit">Citation</a></li>
+        </ul>
+    </li>
+{% endblock %}
+
+{% block jumbotron %}
+    <div class="jumbotron jumbotron-custom grey font-en">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="basic" style="width: 100%;height: 700px"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="cit-details-facet-title" id="title"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ta-l">
+                            <div class="cit-details-facet-hint">DOI: <span id="doi"></span></div>
+                            <div class="cit-details-facet-hint">Publisher: <span id="publisher"></span></div>
+                            <div class="cit-details-facet-hint">Date: <span id="date"></span></div>
+                            <div class="cit-details-facet-hint">Cited: <span id="cited"></span></div>
+                            <div class="cit-details-facet-hint">Author: <span id="author"></span></div>
+                            <div class="cit-details-facet-hint">Subject: <span id="subject"></span></div>
+                            <div class="cit-details-facet-hint">Link: <a href="#" target="_blank" id="link"></a></div>
+                            <div class="cit-details-facet-hint">Like: <i id="ref-like" class="fa fa-star fa-fw hover-like" aria-hidden="true" onclick="like()"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container font-en">
+        <div class="row">
+            <h6 class="page-header">&nbsp;</h6>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><div id="statistic" style="width: 100%;height: 350px"></div></div>
+
+        </div>
+        <div>&nbsp;</div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="page-header" id="page_header" style="font-weight: 600">&nbsp;</h3>
+            </div>
+        </div>
+        <div id="info_show" class="font-en">
+
+        </div>
+    </div>
+
+    <!-- 对应basic力图-->
+<script type="text/javascript">
+    //列表
+    var List = {{ ref_doi|safe }};
+
+    //下面的代码把List的每一部分放到头部和尾部
+    //$('#doi').html(List);
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('basic'), 'shine');
+    myChart.showLoading();
+    var filename='/media/ref/'+List.replace('/','_')+'.json';
+
+    $.getJSON(filename,function (json) {
+        myChart.hideLoading();
+
+        $('#doi').html(json['info']['doi']);
+        $('#title').html(json['info']['title']);
+        $('#publisher').html(json['info']['publisher']);
+        $('#date').html(json['info']['date']);
+        $('#cited').html(json['info']['cited']);
+        $('#author').html(json['info']['author']);
+        $('#subject').html(json['info']['subject']);
+        $('#link').html(json['info']['link']);
+        $('#link').attr('href',json['info']['link']);
+
+        var categories = [];
+        for (var i = 0; i < 3; i++) {
+            categories[i] = {
+                name: 'level ' + i + ' reference'
+            };
+        };
+
+        var doi_record=[];
+        var data=[];
+        var start_info={
+            name:json['info']['doi'],
+            doi:json['info']['doi'],
+            title:json['info']['title'],
+            link:json['info']['link'],
+            publisher:json['info']['publisher'],
+            date:json['info']['date'],
+            cited:json['info']['cited'],
+            author:json['info']['author'],
+            subject:json['info']['subject'],
+            category:0,
+            symbolSize:60
+        };
+        data.push(start_info);
+        doi_record.push(json['info']['doi']);
+
+        $.each(json.nodes,function (index,item) {
+            var tmp_doi=item['doi'];
+            if(doi_record.indexOf(tmp_doi)!=-1){
+                console.log(tmp_doi+item['cat']);
+            }else {
+                var s=0;
+                if(item['cat']==1){
+                    s=22;
+                }else{
+                    s=15;
+                }
+                var tmp_info = {
+                    name: item['doi'],
+                    doi: item['doi'],
+                    title: item['title'],
+                    link: item['link'],
+                    publisher: item['publisher'],
+                    date: item['date'],
+                    cited: item['cited'],
+                    author: item['author'],
+                    subject: item['subject'],
+                    category: item['cat'],
+                    symbolSize:s
+                };
+                data.push(tmp_info);
+                doi_record.push(item['doi']);
+            }
+        });
+
+        var edge=[];
+        $.each(json.edges,function (index,item) {
+            var tmp_edge={
+                source: item['source'],
+                target: item['target']
+            };
+            edge.push(tmp_edge);
+        });
+
+        option = {
+            tooltip: {},
+            legend: [{
+                // selectedMode: 'single',
+                orient:'vertical',
+                bottom:5,
+                left:5,
+                data: categories.map(function (a) {
+                    return a.name;
+                })
+            }],
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [
+                {
+                    name: 'Reference Network',
+                    type: 'graph',
+                    layout: 'force',
+                    data: data,
+                    links: edge,
+                    categories: categories,
+                    //focusNodeAdjacency:true,
+                    roam: true,
+                    label: {
+                        normal: {
+                            //show:true,
+                            position: 'right'
+                        }
+                    },
+                    force: {
+                        repulsion: 30,
+                        layoutAnimation:true
+                    }
+                }
+            ]
+        };
+        myChart.setOption(option,true);
+
+        myChart.on('click', function (params) {
+            if (params.componentType === 'series') {
+                if (params.seriesType === 'graph') {
+                    if (params.dataType === 'edge') {
+                        // 点击到了 graph 的 edge（边）上。
+                        //document.getElementById("span_name").innerHTML='helloworld';
+                    }
+                    else {
+                        // 点击到了 graph 的 node（节点）上。
+                        var author=params.data.author;
+                        document.getElementById("doi").innerHTML = params.data.doi;
+                        document.getElementById("title").innerHTML = params.data.title;
+                        document.getElementById("publisher").innerHTML = params.data.publisher;
+                        document.getElementById("date").innerHTML = params.data.date;
+                        document.getElementById("cited").innerHTML = params.data.cited;
+                        document.getElementById("author").innerHTML = params.data.author;
+                        document.getElementById("link").innerHTML = params.data.link;
+                        $('#link').attr("href",params.data.link);
+                        document.getElementById("subject").innerHTML = params.data.subject;
+                    }
+                }
+            }
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    //列表
+    var sd = {{ ref_doi|safe }};
+    // 基于准备好的dom，初始化echarts实例
+    var myChart2 = echarts.init(document.getElementById('statistic'), 'shine');
+    myChart2.showLoading();
+    var filename_json='/media/ref/'+sd.replace('/','_')+'.json';
+    $.getJSON(filename_json, function (json) {
+        myChart2.hideLoading();
+        //subject数量
+        var subjectCount=json.statistics.subjectCount;
+        //记录subject名称
+        var categories=[];
+        //记录subject和对应数量，如subject1,20
+        var datas=[];
+        var i=0;
+        $.each(json.statistics.count,function (subject,num) {
+            if(num>4) {
+                categories[i] = subject;
+                datas[i] = {
+                    name: subject,
+                    value: num
+                };
+                i += 1;
+            }
+        });
+        myChart2.setOption(option = {
+
+            tooltip : {
+                trigger: 'item',
+                formatter: "{b} : {c} ({d}%)"
+            },
+
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {
+                        show: true,
+                        type: ['pie', 'funnel']
+                    },
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            series : [
+                {
+                    name:'[Subject]:[Records]',
+                    type:'pie',
+                    radius : [30, 120],
+                    center : ['50%', '50%'],
+                    roseType : 'area',
+                    data:datas,
+                }
+            ]
+        }, true);
+
+
+        myChart2.on('click', function (params) {
+            if (params.componentType === 'series') {
+                if (params.seriesType === 'pie') {
+                    //alert(params.name);
+                    var name=params.name;
+                    $('#page_header').html(name);
+                    var i=0;
+                    $.each(json.statistics.subject,function (index,item) {
+                        if(index==name){
+                            $('#info_show').empty();
+                            $.each(item,function (num,content) {
+                                var link=content['link'];
+                                var t='<div class="row"><div class="col-md-3"><a target="_blank" href='+link+'>'+content['doi']+'</a></div>'+'<div class="col-md-8" style="font-size:16px">'+content['title']+'</div>'
+                                        +'<div class="col-md-1"><a target="_blank" href="/summary/?summary='+content['doi']+'"><i class="fa fa-plus fa-fw hover-class" aria-hidden="true" style="color:rgb(3, 102, 214);"></i></a></div></div><hr>'
+                                //$('#circle_table').empty();
+                                $('#info_show').append(t);
+                            })
+                        }
+                    })
+                }
+            }
+
+        });
+
+    });
+
+</script>
+
+<script>
+function like() {
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+    var doi={{ ref_doi|safe }};
+    //alert('hello');
+    //alert(doi);
+    //alert(typeof(doi));
+
+    $.ajax({
+        type:"post",
+        //url:"/postRefDoi",
+        url:"/star",
+        data:{
+            source:'Ref',
+            doi:doi
+        },
+        error:function () {
+            alert("Collection Failed!");
+        },
+        success:function (ret) {
+            if(ret=='existed'){
+                alert('You have already liked it!')
+            }else{
+                alert('Successful Collection!')
+            }
+            document.getElementById('ref-like').setAttribute('style','color:#e36209');
+        }
+    });
+}
+</script>
+{% endblock %}

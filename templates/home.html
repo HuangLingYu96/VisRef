@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block home_navbar %}
+    <li class="active" id="dropdown-menu-home"><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
+{% endblock %}
+
+{% block header %}
+    <div class="row">
+        <div class="col-md-12 ta-c">
+            <h1 class="font-museo"><b>VisRef&nbsp;</b></h1>
+            <p class="font-proxima">Visualization of References & Citations</p>
+            <p class="font-proxima" style="font-size: 14px"><a href="#">Github</a> &nbsp; · &nbsp; by <a href="#">Huang Lingyu</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="jumbotron jumbotron-search">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1"></div>
+                {% include "search_facet.html" %}
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <section class="home-section font-en">
+            <p class="lead">VisRef offers visualization service of relationship between journals owing specific DOI number, including reference relation and citation relation. </p>
+        </section>
+        <section class="home-section font-en" style="font-size: 16px">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>
+                        <i class="fa fa-search fa-fw" aria-hidden="true"></i>
+                        Multiform Search
+                    </h4>
+                    Support search by keyword, DOI and title.
+                </div>
+                <div class="col-md-4">
+                    <h4>
+                        <i class="fa fa-television fa-fw" aria-hidden="true"></i>
+                        Visualization
+                    </h4>
+                    Visualize relations between journals, making information easy and friendly.
+                </div>
+                <div class="col-md-4">
+                    <h4>
+                        <i class="fa fa-star-o fa-fw" aria-hidden="true"></i>
+                        Personalization
+                    </h4>
+                    Personalized collection, you can make marks on whatever interested.
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>
+                        <i class="fa fa-eye fa-fw" aria-hidden="true"></i>
+                        Statistic
+                    </h4>
+                    Besides visualization network, statistic info is also provided.
+                </div>
+                <div class="col-md-4">
+                    <h4>
+                        <i class="fa fa-area-chart fa-fw" aria-hidden="true"></i>
+                        Simplicity & Complexity
+                    </h4>
+                    Service consists of summarized one and detailed one.
+                </div>
+                <div class="col-md-4">
+                    <h4>
+                        <i class="fa fa-arrows-alt fa-fw" aria-hidden="true"></i>
+                        Multiple Presentation
+                    </h4>
+                    Display forms contain force layout, pie layout and bar layout.
+                </div>
+            </div>
+        </section>
+        <div>&nbsp;</div>
+        <section class="home-section font-en">
+            <h2 class="page-header">Declaration</h2>
+            <div class="row" style="font-size: 16px">
+                <div class="col-md-12">
+                    Staple data source is &nbsp;<a href="https://www.crossref.org/" target="_blank"><b>Crossref</b></a> ,&nbsp;
+                    the other data source is &nbsp;<a href="http://xueshu.baidu.com/" target="_blank"><b>Baidu Scholar</b></a>.&nbsp;
+                    Font end style refers to &nbsp;<a href="http://fontawesome.io/" target="_blank"><b>Font Awesome</b></a>&nbsp;
+                    and &nbsp;<a href="https://github.com/" target="_blank"><b>Github</b></a>.</div>
+                </div>
+        </section>
+        <div style="height: 60px">&nbsp;</div>
+    </div>
+{% endblock %}
