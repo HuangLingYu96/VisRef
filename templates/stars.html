@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block  complete %}Your stars{% endblock %}
+
+{% block jumbotron %}
+    <div class="container">
+        <div>&nbsp;</div>
+        <div class="row font-en">
+            <div class="col-md-1"></div>
+            <div class="col-md-2 stars-profile">
+                <dl class="form-group">
+                    <dd>
+                        <img src="/media/usr/{{ request.user.id }}.jpg" onerror="javascript:this.src='/media/usr/user.png'">
+                    </dd>
+                </dl>
+                <dl class="form-group">
+                    <dt>
+                        <label for="pic">{{ request.user.username }}</label>
+                    </dt>
+                    <dd>
+                        <a class="btn btn-lg btn-block button-green" href="/indiv/{{ request.user.username }}/profile/">Edit your profile</a>
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-8">
+                <ul id="starTab" class="nav nav-tabs">
+                    <li id="id_star" class="">
+                        <a href="/indiv/{{ request.user.username }}/stars/">Stars
+                            <span class="counter">{{ len_total }}</span>
+                        </a>
+                    </li>
+                    <li id="id_star_summary" class="">
+                        <a href="/indiv/{{ request.user.username }}/stars/summary">Summary
+                            <span class="counter">{{ len_sum }}</span></a>
+                    </li>
+                    <li id="id_star_ref" class="">
+                        <a href="/indiv/{{ request.user.username }}/stars/reference">Reference
+                            <span class="counter">{{ len_ref }}</span></a>
+                    </li>
+                    <li id="id_star_cit" class="">
+                        <a href="/indiv/{{ request.user.username }}/stars/citation">Citation
+                        <span class="counter">{{ len_cit }}</span></a>
+                    </li>
+                </ul>
+                <div class="stars-list">
+                    {% if length != 0 %}
+                    <div class="textbox-custom">
+                    {% load pagination_tags %}
+                    {% autopaginate results 10 %}
+                        <div class="row">
+                        {% for content in results %}
+                            <div class="col-md-10">
+                                <div class="text-title">{{ content.star_doi }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <i class="fa fa-fw fa-minus-circle stars-download" aria-hidden="true" onclick="deleteLike('{{ content.star_doi }}','{{ request.user.username }}','{{ content.star_source }}')"></i>
+                                </div>
+                                <div class="text-content">{{ content.star_title }}</div>
+                                <div class="text-content">Created on: {{ content.star_time }}</div>
+                                <div class="text-content"><i class="fa fa-circle" aria-hidden="true"></i>&nbsp;{{ content.star_source }}</div>
+                                <hr class="indiv-hr">
+                            </div>
+                            <div class="col-md-2">
+                                {% if content.star_source == 'Summary' or content.star_source == 'Reference' %}
+                                <div class="row">
+                                    <a href="/media/ref/{{ content.star_file }}">
+                                        <i class="fa fa-fw fa-arrow-circle-down stars-download" aria-hidden="true">&nbsp;Reference</i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                                {% if content.star_source == 'Summary' or content.star_source == 'Citation' %}
+                                <div class="row">
+                                    <a href="/media/cit/{{ content.star_file }}">
+                                        <i class="fa fa-fw fa-arrow-circle-down stars-download" aria-hidden="true">&nbsp;Citation</i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% paginate %}
+                    </div>
+                    {% else %}
+                    <div class="no-star-list ta-c">
+                        <p style="color: grey"><i class="fa fa-fw fa-star"></i></p>
+                        <p>You haven't collected&nbsp;{% if cat == '' %}anything{% else %}{{ cat }}{% endif %}&nbsp;yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div>&nbsp;</div>
+    </div>
+
+<script>
+    var ids={{ ids|safe }};
+    document.getElementById(ids).setAttribute('class','active');
+</script>
+
+<script>
+function deleteLike(doi,name,source) {
+    //alert(doi);
+    //alert(name);
+    $.ajax({
+        type:"post",
+        url:"/dislike",
+        data:{
+            name:name,
+            doi:doi,
+            source:source
+        },
+        error:function () {
+            alert('Collection deletion failed!')
+        },
+        success:function (ret) {
+            //alert('Collection has been deleted!');
+            location.reload();
+        }
+    })
+}
+</script>
+{% endblock %}

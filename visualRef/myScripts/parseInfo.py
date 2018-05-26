@@ -48,7 +48,7 @@ def parse_info(doi,item):
         for a in authors:
             author = ''
             try:
-                author=author+a['given']
+                author=author+a['given']+' '
             except:
                 print('author given is lost: '+doi)
             try:

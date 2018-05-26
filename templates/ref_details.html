@@ -29,13 +29,15 @@
                     <div class="row">
                         <div class="col-md-12 ta-l">
                             <div class="cit-details-facet-hint">DOI: <span id="doi"></span></div>
-                            <div class="cit-details-facet-hint">Publisher: <span id="publisher"></span></div>
+                            <div class="cit-details-facet-hint">Journal: <span id="publisher"></span></div>
                             <div class="cit-details-facet-hint">Date: <span id="date"></span></div>
                             <div class="cit-details-facet-hint">Cited: <span id="cited"></span></div>
+                            <div class="cit-details-facet-hint">Reference: <span id="subject"></span></div>
                             <div class="cit-details-facet-hint">Author: <span id="author"></span></div>
-                            <div class="cit-details-facet-hint">Subject: <span id="subject"></span></div>
                             <div class="cit-details-facet-hint">Link: <a href="#" target="_blank" id="link"></a></div>
+                            {% if request.user.username %}
                             <div class="cit-details-facet-hint">Like: <i id="ref-like" class="fa fa-star fa-fw hover-like" aria-hidden="true" onclick="like()"></i></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -57,11 +59,26 @@
         <div>&nbsp;</div>
         <div class="row">
             <div class="col-md-12">
-                <h3 class="page-header" id="page_header" style="font-weight: 600">&nbsp;</h3>
+                <h3 class="page-header" id="subject_name" style="font-weight: 600"></h3>
             </div>
         </div>
         <div id="info_show" class="font-en">
+            <div class="row" id="journal-show">
 
+            </div>
+            <div class="row">
+                <div class="col-md-12 ta-c">
+                    <ul class="pagination">
+                        <!--
+                        <li class="active pa" id="p1"><a href="javascript:void(0);" onclick="page(1)">1</a></li>
+                        <li id="p2"><a href="javascript:void(0);" onclick="page(2)">2</a></li>
+                        <li id="p3"><a href="javascript:void(0);" onclick="page(3)">3</a></li>
+                        <li id="p4"><a href="javascript:void(0);" onclick="page(4)">4</a></li>
+                        <li id="p5"><a href="javascript:void(0);" onclick="page(5)">5</a></li>
+                        -->
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -69,13 +86,14 @@
 <script type="text/javascript">
     //列表
     var List = {{ ref_doi|safe }};
+    var filename1={{ ref_file_id|safe }};
 
     //下面的代码把List的每一部分放到头部和尾部
     //$('#doi').html(List);
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('basic'), 'shine');
     myChart.showLoading();
-    var filename='/media/ref/'+List.replace('/','_')+'.json';
+    var filename='/media/ref/'+filename1.toString()+'.json';
 
     $.getJSON(filename,function (json) {
         myChart.hideLoading();
@@ -115,10 +133,61 @@
         data.push(start_info);
         doi_record.push(json['info']['doi']);
 
+        var edge=[];
+        var source=[];
+        var target=[];
+        $.each(json.edges,function (index,item) {
+            var tmp_edge={
+                source: item['source'],
+                target: item['target']
+            };
+            edge.push(tmp_edge);
+            source.push(item['source']);
+            target.push(item['target']);
+        });
+        //alert(edge.length);
+        //alert(source.length);
+        //alert(target.length);
+
         $.each(json.nodes,function (index,item) {
             var tmp_doi=item['doi'];
             if(doi_record.indexOf(tmp_doi)!=-1){
-                console.log(tmp_doi+item['cat']);
+                console.log(tmp_doi+' '+item['cat']+' is repeated');
+            }else {
+                if(source.indexOf(tmp_doi)==-1 & target.indexOf(tmp_doi)==-1){
+                    console.log(tmp_doi+' has no target and source');
+                }else {
+                    var s = 0;
+                    if (item['cat'] == 1) {
+                        s = 22;
+                    } else {
+                        s = 15;
+                    }
+                    var tmp_info = {
+                        name: item['doi'],
+                        doi: item['doi'],
+                        title: item['title'],
+                        link: item['link'],
+                        publisher: item['publisher'],
+                        date: item['date'],
+                        cited: item['cited'],
+                        author: item['author'],
+                        subject: item['subject'],
+                        category: item['cat'],
+                        symbolSize: s
+                    };
+                    data.push(tmp_info);
+                    doi_record.push(item['doi']);
+                }
+            }
+        });
+        //alert(data.length);
+
+        /*
+        $.each(json.nodes,function (index,item) {
+            var tmp_doi=item['doi'];
+            if(doi_record.indexOf(tmp_doi)!=-1){
+                console.log(tmp_doi+' '+item['cat']);
             }else {
                 var s=0;
                 if(item['cat']==1){
@@ -143,7 +212,9 @@
                 doi_record.push(item['doi']);
             }
         });
+        alert(data.length);*/
 
+        /*
         var edge=[];
         $.each(json.edges,function (index,item) {
             var tmp_edge={
@@ -152,6 +223,7 @@
             };
             edge.push(tmp_edge);
         });
+        alert(edge.length);*/
 
         option = {
             tooltip: {},
@@ -218,13 +290,15 @@
     });
 </script>
 
+    <!--对应subject饼图-->
 <script type="text/javascript">
     //列表
     var sd = {{ ref_doi|safe }};
+    var filename2={{ ref_file_id|safe }};
     // 基于准备好的dom，初始化echarts实例
     var myChart2 = echarts.init(document.getElementById('statistic'), 'shine');
     myChart2.showLoading();
-    var filename_json='/media/ref/'+sd.replace('/','_')+'.json';
+    var filename_json='/media/ref/'+filename2.toString()+'.json';
     $.getJSON(filename_json, function (json) {
         myChart2.hideLoading();
         //subject数量
@@ -232,44 +306,35 @@
         //记录subject名称
         var categories=[];
         //记录subject和对应数量，如subject1,20
+        var datas_temp=[];
         var datas=[];
         var i=0;
         $.each(json.statistics.count,function (subject,num) {
-            if(num>4) {
-                categories[i] = subject;
-                datas[i] = {
-                    name: subject,
-                    value: num
-                };
-                i += 1;
-            }
+            categories[i] = subject;
+            datas_temp[i] = {
+                name: subject,
+                value: num
+            };
+            i += 1;
         });
+        var subject_count=json['statistics']['subjectCount'];
+        if(subject_count>20){
+            datas=datas_temp.slice(0,20);
+        }else{
+            datas=datas_temp;
+        }
         myChart2.setOption(option = {
 
             tooltip : {
                 trigger: 'item',
                 formatter: "{b} : {c} ({d}%)"
             },
-
-            toolbox: {
-                show : true,
-                feature : {
-                    mark : {show: true},
-                    dataView : {show: true, readOnly: false},
-                    magicType : {
-                        show: true,
-                        type: ['pie', 'funnel']
-                    },
-                    restore : {show: true},
-                    saveAsImage : {show: true}
-                }
-            },
             calculable : true,
             series : [
                 {
                     name:'[Subject]:[Records]',
                     type:'pie',
-                    radius : [30, 120],
+                    radius : [20, 120],
                     center : ['50%', '50%'],
                     roseType : 'area',
                     data:datas,
@@ -281,22 +346,51 @@
         myChart2.on('click', function (params) {
             if (params.componentType === 'series') {
                 if (params.seriesType === 'pie') {
-                    //alert(params.name);
+                    //subject名称
                     var name=params.name;
-                    $('#page_header').html(name);
-                    var i=0;
-                    $.each(json.statistics.subject,function (index,item) {
-                        if(index==name){
-                            $('#info_show').empty();
-                            $.each(item,function (num,content) {
-                                var link=content['link'];
-                                var t='<div class="row"><div class="col-md-3"><a target="_blank" href='+link+'>'+content['doi']+'</a></div>'+'<div class="col-md-8" style="font-size:16px">'+content['title']+'</div>'
-                                        +'<div class="col-md-1"><a target="_blank" href="/summary/?summary='+content['doi']+'"><i class="fa fa-plus fa-fw hover-class" aria-hidden="true" style="color:rgb(3, 102, 214);"></i></a></div></div><hr>'
-                                //$('#circle_table').empty();
-                                $('#info_show').append(t);
-                            })
+                    var subject="'"+name+"'";
+                    $('#subject_name').html(name);
+                    //生成分页导航栏
+                    var subject_num=json['statistics']['count'][name];//获取该subject下文献的数量
+                    var pages=subject_num/10 +1;//计算页数，每页10条文献
+                    var pagination_html='';
+                    //前一页
+                    pagination_html+='<li class="disabled" id="previous"><a href="javascript:void(0);">previous<<</a></li>';
+                    //循环生成导航
+                    for(var page=1;page<=pages;page++){
+                        //var pstr="'"+page.toString()+"'";
+                        var page_id='p'+page.toString();
+                        if(page==1){
+                            pagination_html+='<li class="active pa" id="'+page_id+'"><a href="javascript:void(0);" onclick="page_select('+subject+','+page+')">'+page.toString()+'</a></li>';
+                        }else{
+                            pagination_html+='<li class="" id="'+page_id+'"><a href="javascript:void(0);" onclick="page_select('+subject+','+page+')">'+page.toString()+'</a></li>';
                         }
-                    })
+                    }
+                    //后一页
+                    pagination_html+='<li class="" id="next"><a href="javascript:void(0);" onclick="page_next('+subject+')">>>next</a></li>';
+                    $('.pagination').empty();
+                    $('.pagination').html(pagination_html);
+                    //默认显示前10条
+                    $('#journal-show').empty();
+                    var page_from=0;
+                    var page_to=10;
+                    if(page_to>subject_num){
+                        page_to=subject_num;
+                    }
+                    var subject_html='';
+                    for(var p=page_from;p<page_to;p++){
+                        var num=p+1;
+                        var doi=json['statistics']['subject'][name][p]['doi'];
+                        var title=json['statistics']['subject'][name][p]['title'];
+                        var link='https://doi.org/'+doi;
+                        var tmp='<div class="col-md-1">'+num+'</div>'+
+                            '<div class="col-md-3"><a href="'+link+'">'+doi+'</a></div>'+
+                            '<div class="col-md-7">'+title+'</div>'+
+                            '<div class="col-md-1"><a href="/summary/?summary='+doi+'">>>summary</a></div>'+
+                            '<div class="col-md-12"><hr style="margin:6px 0px"></div>';
+                        subject_html+=tmp;
+                    }
+                    $('#journal-show').html(subject_html);
                 }
             }
 
@@ -306,22 +400,21 @@
 
 </script>
 
+    <!--收藏-->
 <script>
 function like() {
     $.ajaxSetup({
         data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
     var doi={{ ref_doi|safe }};
-    //alert('hello');
-    //alert(doi);
-    //alert(typeof(doi));
-
+    //禁用onclick，防止重复收藏
+    document.getElementById('ref-like').onclick=null;
     $.ajax({
         type:"post",
         //url:"/postRefDoi",
         url:"/star",
         data:{
-            source:'Ref',
+            source:'Reference',
             doi:doi
         },
         error:function () {
@@ -336,6 +429,79 @@ function like() {
             document.getElementById('ref-like').setAttribute('style','color:#e36209');
         }
     });
+}
+</script>
+
+<script>
+//分页函数，name为subject名称，page为页数
+function page_select(name,page) {
+    if(page==1){
+        $('#previous').attr('class','disabled');
+        var pre_html='<a href="javascript:void(0);">previous<<</a>';
+        $('#previous').html(pre_html);
+    }else{
+        $('#previous').attr('class','');
+        var subject="'"+name+"'";
+        var pre_html='<a href="javascript:void(0);" onclick="page_previous('+subject+')">'+'previous<<'+'</a>';
+        $('#previous').html(pre_html);
+    }
+    var id='p'+page.toString();
+    var page_from=(page-1)*10;
+    var page_to=page*10;
+    $('#journal-show').empty();
+    var subject_html = '';
+    $.getJSON(filename_json, function (json) {
+        var subject_num=json['statistics']['count'][name];//文献总数
+        var page_num=Math.ceil(subject_num/10);
+        console.log(page);
+        console.log(page_num);
+        if(page==page_num){
+            $('#next').attr('class','disabled');
+            var next_html='<a href="javascript:void(0);">next>></a>';
+            $('#next').html(next_html);
+        }else{
+            $('#next').attr('class','');
+            var subject="'"+name+"'";
+            var next_html='<a href="javascript:void(0);" onclick="page_next('+subject+')">'+'next>>'+'</a>';
+            $('#next').html(next_html);
+        }
+        if(page_to>subject_num){
+            page_to=subject_num;
+        }
+        console.log(page);
+        console.log(page_from);
+        console.log(page_to);
+        for (var p = page_from; p < page_to; p++) {
+            var num = p + 1;
+            var doi = json['statistics']['subject'][name][p]['doi'];
+            var title = json['statistics']['subject'][name][p]['title'];
+            var link = 'https://doi.org/' + doi;
+            var tmp = '<div class="col-md-1">' + num + '</div>' +
+                '<div class="col-md-3"><a href="' + link + '">' + doi + '</a></div>' +
+                '<div class="col-md-7">' + title + '</div>' +
+                '<div class="col-md-1"><a target="_blank" href="/summary/?summary=' + doi + '">>>summary</a></div>' +
+                '<div class="col-md-12"><hr style="margin:6px 0px"></div>';
+            subject_html += tmp;
+        }
+        $('#journal-show').html(subject_html);
+        $('.pa').attr('class','');
+        document.getElementById(id).setAttribute('class','active pa');
+    });
+}
+
+//前一页函数，name为subject名称
+function page_previous(name) {
+    var current_page=$('.pa a').text();
+    //alert(current_page);
+    var pre_page=parseInt(current_page)-1;
+    page_select(name, pre_page);
+}
+
+//后一页函数，name为subject名称
+function page_next(name) {
+    var current_page=$('.pa a').text();
+    var next_page=parseInt(current_page)+1;
+    page_select(name,next_page);
 }
 </script>
 {% endblock %}

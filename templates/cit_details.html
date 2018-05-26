@@ -16,6 +16,7 @@
 {% block jumbotron %}
     <div class="jumbotron jumbotron-custom grey font-en">
         <div class="container">
+            <!--
             <div class="row">
                 <div class="col-md-6 ta-c">
                     {% if request.user.is_authenticated %}
@@ -42,6 +43,37 @@
                     </span>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="graph" style="width: 100%;height: 300px"></div>
+                </div>
+            </div>
+            -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="graph" style="width: 100%;height: 300px"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="cit-details-facet-title" id="cit_title"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ta-l">
+                            <div class="cit-details-facet-hint">DOI: <span id="cit_doi"></span></div>
+                            <div class="cit-details-facet-hint">Year: <span id="cit_year"></span></div>
+                            <div class="cit-details-facet-hint">Cited: <span id="cit_cited"></span></div>
+                            <div class="cit-details-facet-hint">Information: <span id="cit_info"></span></div>
+                            <div class="cit-details-facet-hint">Link: <a href="#" target="_blank" id="cit_link"></a></div>
+                            {% if request.user.username %}
+                            <div class="cit-details-facet-hint">Like: <i id="cit-like" class="fa fa-star fa-fw hover-like" aria-hidden="true" onclick="like()"></i></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>&nbsp;</div>
         </div>
     </div>
 {% endblock %}
@@ -50,9 +82,11 @@
     <div class="container font-en">
         <h2 class="page-header">Citation&nbsp;&nbsp;&nbsp;<span style="font-size: 12px;color: rgb(175, 175, 175)">from Baidu Scholar</span></h2>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
                 <div id="main_a" style="width: 100%;height:250px;"></div>
             </div>
+            <div class="col-md-1"></div>
         </div>
     </div>
 
@@ -96,21 +130,26 @@
 <script type="text/javascript">
     //列表
     var sd = {{ cit_doi|safe }};
-    var cit_file='/media/cit/'+sd.replace('/','_')+'.json';
-    var myChart_a=echarts.init(document.getElementById('main_a'),'shine');
-    //var myChart_b=echarts.init(document.getElementById('main_b'),'shine');
+    var filename={{ cit_file_id|safe }};
+    var cit_file='/media/cit/'+filename+'.json';
+    var myChart_a=echarts.init(document.getElementById('main_a'));
     myChart_a.showLoading();
-    //myChart_b.showLoading();
     $.getJSON(cit_file,function (json) {
+        //基本信息
         $('#cit_doi').html(json['info']['doi']);
         $('#cit_title').html(json['info']['title']);
-        $('#cit_publisher').html(json['info']['publisher']);
-        $('#cit_date').html(json['info']['date']);
+        //$('#cit_date').html(json['info']['date']);
         $('#cit_cited').html(json['info']['cited']);
-        $('#cit_author').html(json['info']['author']);
         $('#cit_subject').html(json['info']['subject']);
         $('#cit_link').html(json['info']['link']);
         $('#cit_link').attr('href',json['info']['link']);
+        var cit_author_list=json['info']['author'].split(',');
+        var cit_author='';
+        if(cit_author_list.length>3) {
+            cit_author = cit_author_list[0] + ',' + cit_author_list[1] + ',' + cit_author_list[2] + ' ...';
+        }
+        var cit_info=cit_author+' - '+'《'+json['info']['publisher']+'》';
+        $('#cit_info').html(cit_info);
 
         myChart_a.hideLoading();
         var cit_xasis = [];
@@ -119,6 +158,8 @@
         var cit_cum=[];
         var publish_date=json['info']['date'];
         var start_year_str=publish_date.split('-')[0];
+        //2018-3-24添加关系图组件
+        $('#cit_year').html(start_year_str);
         var start_year=parseInt(start_year_str);
 
         $.each(json.summary, function (year, cited) {
@@ -163,25 +204,60 @@
                 type: 'bar',
                 data: cit_past,
                 stack: '引用信息',
+                itemStyle:{
+                    normal:{
+                        color:'rgba(255,144,128,1)'
+                    }
+                }
             }, {
                 name: 'Citation',
                 type: 'bar',
                 data: cit_yaxix,
                 stack: '引用信息',
+                itemStyle:{
+                    normal:{
+                        color:'rgba(0,191,183,1)'
+                    }
+                }
             }, {
                 name: 'Total',
                 type: 'line',
                 data: cit_cum,
                 stack: '总信息',
+                itemStyle:{
+                    normal:{
+                        color:'rgba(252,230,48,1)'
+                    }
+                }
             }]
         });
 
-        //myChart_b.hideLoading();
         var year=[];
         var append_html='';
+
+        //2018-3-24添加关系图组件node,edge
+        var node=[];
+        var edge=[];
+        var origin={
+            name:json['info']['title'],
+            title:json['info']['title'],
+            year:start_year,
+            cited:json['info']['cited'],
+            info:cit_info,
+            doi:json['info']['doi'],
+            link:json['info']['link'],
+            category:0,
+            symbolSize:60
+        };
+        node.push(origin);
+        var cat=[
+            {name:'origin'},
+            {name:'citation'}
+        ];
+
         $.each(json.details,function (num,info) {
             if(num>=0 && num<10) {
-                if (info['doi'] != 'Unknown') {
+                if (info['doi'] != undefined) {
                     var link = 'https://doi.org/' + info['doi'];
                     var sum = '/summary/?summary=' + info['doi'];
                     var tmp_html = '<div class="row"><div class="col-md-10"><div id="title"><a target="_blank" href="' + link + '">' + info['title'] + '</a></div></div>'
@@ -199,9 +275,81 @@
                     append_html += tmp_html;
                 }
             }
+            //2018-3-24添加关系图组件
+            var tmp_node={
+                name:judgeUndefined(info['title']),
+                title:judgeUndefined(info['title']),
+                year:judgeUndefined(info['year']),
+                cited:judgeUndefined(info['cited']),
+                info:judgeUndefined(info['info']),
+                doi:judgeUndefined(info['doi']),
+                link:judgeUndefined('/summary/?summary=' + info['doi']),
+                category:1,
+                symbolSize:22
+            };
+            var tmp_edge={
+                source: json['info']['title'],
+                target: info['title']
+            };
+            node.push(tmp_node);
+            edge.push(tmp_edge);
         });
         $('#info_list').empty();
         $('#info_list').append(append_html);
+
+        //2018-3-24添加关系图组件
+        var citGraph = echarts.init(document.getElementById('graph'), 'shine');
+        var option = {
+            tooltip: {},
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [
+                {
+                    name: 'Citation Network',
+                    type: 'graph',
+                    layout: 'force',
+                    data: node,
+                    links: edge,
+                    categories: cat,
+                    //focusNodeAdjacency:true,
+                    roam: true,
+                    label: {
+                        normal: {
+                            //show:true,
+                            position: 'right'
+                        }
+                    },
+                    force: {
+                        repulsion: 100,
+                        layoutAnimation:false
+                    }
+                }
+            ]
+        };
+        citGraph.setOption(option,true);
+        citGraph.on('click', function (params) {
+            if (params.componentType === 'series') {
+                if (params.seriesType === 'graph') {
+                    if (params.dataType === 'edge') {
+                        // 点击到了 graph 的 edge（边）上。
+                        //document.getElementById("span_name").innerHTML='helloworld';
+                    }
+                    else {
+                        // 点击到了 graph 的 node（节点）上。
+                        var author=params.data.author;
+                        document.getElementById("cit_doi").innerHTML = params.data.doi;
+                        document.getElementById("cit_title").innerHTML = params.data.title;
+                        document.getElementById("cit_publisher").innerHTML = params.data.publisher;
+                        document.getElementById("cit_year").innerHTML = params.data.year;
+                        document.getElementById("cit_cited").innerHTML = params.data.cited;
+                        document.getElementById("cit_info").innerHTML = params.data.info;
+                        document.getElementById("cit_link").innerHTML = params.data.link;
+                        $('#cit_link').attr("href",params.data.link);
+                    }
+                }
+            }
+
+        });
     });
 
 </script>
@@ -260,16 +408,13 @@ function like() {
     $.ajaxSetup({
         data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
-    //alert('hello');
-    //alert(doi);
-    //alert(typeof(doi));
-
+    //禁用收藏onclick，防止重复收藏
+    document.getElementById('cit-like').onclick=null;
     $.ajax({
         type:"post",
-        //url:"/postRefDoi",
         url:"/star",
         data:{
-            source:'Cit',
+            source:'Citation',
             doi:sd
         },
         error:function () {
@@ -284,6 +429,16 @@ function like() {
             document.getElementById('cit-like').setAttribute('style','color:#e36209;font-size:280px');
         }
     });
+}
+</script>
+
+<script>
+function judgeUndefined(info) {
+    if(typeof(info)=='undefined'){
+        return 'Unknown';
+    }else{
+        return info;
+    }
 }
 </script>
 {% endblock %}

@@ -37,13 +37,13 @@
 
 {% block content %}
     <div class="container font-en">
-        <div class="section-card" style="margin-top: 0 !important;">
-            <h2 class="page-header" style="margin-bottom: 0" id="ref">Reference Visualization</h2>
+        <div class="section-card mg-t-0">
+            <h2 class="page-header mg-b-0" id="ref">Reference Visualization</h2>
             <div class="row">
                 <div class="col-md-10">
                     <section class="vis-search">
                         <label for="ref-input"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only">搜索图标</span></label>
-                        <input id="ref-input" class="form-control input-lg vis-input" placeholder="Please input DOI or title (be complete) , DOI for advise，eg:: 10.1007/s10495-016-1250-5" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+                        <input id="ref-input" class="form-control input-lg vis-input" placeholder="Enter DOI, e.g., 10.1038/nature11003" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
                     </section>
                 </div>
                 <div class="col-md-2">
@@ -54,7 +54,7 @@
                     </section>
                 </div>
             </div>
-            <div id="ref-banner" class="row" style="margin-top: 30px">
+            <div id="ref-banner" class="row mg-t-30">
                 <div class="col-md-1"></div>
                 <div class="col-md-5 font-museo">
                     <div class="ta-l" style="font-size: 72px;font-weight: 300;color: #2b669a">Service for</div>
@@ -88,7 +88,13 @@
                     </div>
                 </div>
             </div>
-            <div id="ref-main" class="row" style="margin-top: 30px;display: none">
+            <div id="ref-load" class="row mg-t-30 display-none">
+                <div class="col-md-12">
+                    <div>&nbsp;</div>
+                    <div id="ref-showload" style="width: 100%;height:350px;"></div>
+                </div>
+            </div>
+            <div id="ref-main" class="row mg-t-30 display-none">
                 <div class="col-md-7">
                     <div>&nbsp;</div>
                     <div id="ref-pic" style="width: 100%;height:350px;"></div>
@@ -107,12 +113,12 @@
                     </div>
                 </div>
             </div>
-            <h2 class="page-header" style="margin-bottom: 0" id="cit">Citation Visualization</h2>
+            <h2 class="page-header mg-b-0" id="cit">Citation Visualization</h2>
             <div class="row">
                 <div class="col-md-10">
                     <section class="vis-search">
                         <label for="cit-input"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only">搜索图标</span></label>
-                        <input id="cit-input" class="form-control input-lg vis-input" placeholder="Please input DOI or title (be complete) , DOI for advise，eg:: 10.2174/1568009611313020007" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1" required>
+                        <input id="cit-input" class="form-control input-lg vis-input" placeholder="Enter DOI, e.g., 10.1038/nature11003" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1" required>
                     </section>
                 </div>
                 <div class="col-md-2">
@@ -123,7 +129,7 @@
                     </section>
                 </div>
             </div>
-            <div id="cit-banner" class="row" style="margin-top: 30px">
+            <div id="cit-banner" class="row mg-t-30">
                 <div class="col-md-1"></div>
                 <div class="col-md-5 font-museo">
                     <div>&nbsp;</div>
@@ -137,8 +143,13 @@
                 </div>
                 <div class="col-md-6"><img src="/static/pic/citation.png" width="555px" height="350px"></div>
             </div>
-            <div id="cit-main" class="row" style="margin-top: 30px;display: none">
-                <div class="col-md-7">
+            <div id="cit-load" class="row mg-t-30 display-none">
+                <div class="col-md-12">
+                    <div id="cit-showload" style="width: 100%;height:350px;"></div>
+                </div>
+            </div>
+            <div id="cit-main" class="row mg-t-30 display-none">
+                <div class="col-md-7" id="cit-container">
                     <div id="cit-pic" style="width: 100%;height:350px;"></div>
                 </div>
                 <div class="col-md-5 ta-l">
@@ -165,20 +176,21 @@ function do_ref() {
     });
 
     $('#ref-banner').hide();
-    $('#ref-main').show();
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('ref-pic'), 'shine');
+    //防止二次请求错误，所以先清空一下
+    $('#ref-load').empty();
+    $('#ref-load').html('<div class="col-md-12"><div>&nbsp;</div><div id="ref-showload" style="width: 100%;height:350px;"></div></div>');
+    $('#ref-load').show();
+    var refload=echarts.init(document.getElementById('ref-showload'));
+    //alert('yes');
+    refload.showLoading();
 
-    myChart.showLoading();
     var keyword=$('#ref-input').val();
     //alert(keyword);
     if(keyword==''){
         keyword='10.1007/s10495-016-1250-5';
     }
-    //var file='/media/ref/'+keyword.replace('/','_')+'.gexf';
     $.ajax({
         type:"post",
-        //url:"/postRefDoi",
         url:"/vis/ref",
         data:{
             keyword:keyword
@@ -188,15 +200,17 @@ function do_ref() {
         },
         success:function (ret) {
             //alert(ret);
-            if(ret!='no') {
-
-                var r_doi=ret.replace('"','');
-                var ref_doi=r_doi.replace('"','');
-                var ref_file='/media/ref/'+ref_doi.replace('/','_')+'.json';
+            if(ret!='TitleError'&& ret!='DoiError') {
+                //隐藏加载框
+                refload.hideLoading();
+                $('#ref-load').hide();
+                //信息框
+                $('#ref-main').show();
+                var myChart = echarts.init(document.getElementById('ref-pic'), 'shine');
+                var filename=ret.toString();
+                var ref_file='/media/ref/'+filename+'.json';
 
                 $.getJSON(ref_file,function (json) {
-                    myChart.hideLoading();
-
                     var details='/vis/ref/'+json['info']['doi'];
                     $('#ref-details').attr('href',details);
                     $('#ref-doi').html(json['info']['doi']);
@@ -310,18 +324,9 @@ function do_ref() {
                 });
 
             }else{
-                alert("No record found in CrossRef");
-                myChart.hideLoading();
-                $('#ref-pic').empty();
-                $('#ref-pic').attr('class','font-en ta-c');
-                $('#ref-pic').html('No record found in CrossRef')
-                $('#ref-doi').html('No record found');
-                $('#ref-title').html('No record found');
-                $('#ref-date').html('No record found');
-                $('#ref-publisher').html('No record found');
-                $('#ref-cited').html('No record found');
-                $('#ref-author').html('No record found');
-                $('#ref-subject').html('No record found');
+                alert("Crossref has not collected the record!");
+                refload.hideLoading();
+                $('#ref-load').html('<div class="col-md-12"><div>&nbsp;</div><div id="cit-showload" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div></div>');
             }
         }
     });
@@ -333,19 +338,20 @@ function do_cit(){
     });
 
     $('#cit-banner').hide();
-    $('#cit-main').show();
-    // 基于准备好的dom，初始化echarts实例
-    var citChart = echarts.init(document.getElementById('cit-pic'), 'shine');
+    //防止二次请求错误，所以先清空一下
+    $('#cit-load').empty();
+    $('#cit-load').html('<div class="col-md-12"><div id="cit-showload" style="width: 100%;height:350px;"></div></div>');
+    $('#cit-load').show();
+    var citload=echarts.init(document.getElementById('cit-showload'));
+    citload.showLoading();
 
-    citChart.showLoading();
     var keyword=$('#cit-input').val();
+    //设置默认doi
     if(keyword==''){
-        keyword='10.2174/1568009611313020007';
+        keyword='10.1038/nature11003';
     }
-    //var file='/media/ref/'+keyword.replace('/','_')+'.gexf';
     $.ajax({
         type:"post",
-        //url:"/postRefDoi",
         url:"/vis/cit",
         data:{
             keyword:keyword
@@ -355,18 +361,18 @@ function do_cit(){
         },
         success:function (ret) {
             //alert(ret);
-            if(ret!='no') {
-                citChart.hideLoading();
-                //var url="/vis/cit/"+ret;
-                //$(location).attr('href',url);
-                //window.location.replace(url);
-                var c_doi=ret.replace('"','');
-                var cit_doi=c_doi.replace('"','');
-                var cit_file='/media/cit/'+cit_doi.replace('/','_')+'.json';
-                var url='/vis/cit/'+cit_doi;
-                $('#cit-details').attr('href',url);
+            if(ret!='TitleError'&& ret!='DoiError') {
+                //隐藏加载框
+                citload.hideLoading();
+                $('#cit-load').hide();
+                //信息框
+                $('#cit-main').show();
+                var citChart = echarts.init(document.getElementById('cit-pic'));
 
+                var filename=ret.toString();
+                var cit_file='/media/cit/'+filename+'.json';
                 $.getJSON(cit_file,function (json) {
+                    //基本信息
                     $('#cit-doi').html(json['info']['doi']);
                     $('#cit-title').html(json['info']['title']);
                     $('#cit-date').html(json['info']['date']);
@@ -376,7 +382,7 @@ function do_cit(){
                     $('#cit-subject').html(json['info']['subject']);
                     $('#cit-link').html(json['info']['link']);
                     $('#cit-link').attr('href',json['info']['link']);
-
+                    //处理作者，最多显示三个人
                     var cit_author_list=json['info']['author'].split(',');
                     if(cit_author_list.length>3) {
                         var cit_author = cit_author_list[0] + ',' + cit_author_list[1] + ',' + cit_author_list[2] + ' ...';
@@ -388,70 +394,96 @@ function do_cit(){
                     var cit_cum=[];
                     var publish_date=json['info']['date'];
                     var start_year_str=publish_date.split('-')[0];
-                    //alert(start_year_str);
+                    //出版年份
                     var start_year=parseInt(start_year_str);
-                    //alert(start_year);
-                    //var count=0;
 
-                    $.each(json.summary, function (year, cited) {
-                        var num_year=parseInt(year);
-                        if(num_year>=start_year) {
-                            cit_xasis.push(year);
-                            cit_yaxix.push(cited['cited']);
-                            cit_cum.push(cited['total']);
-                            var past=cited['total']-cited['cited'];
-                            cit_past.push(past);
-                        }
-                    });
-                    citChart.setOption(option = {
-                        title: {
-                            text: ''
-                        },
-                        tooltip: {
-                            trigger: 'axis',
-                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    if(!jQuery.isEmptyObject(json['summary'])) {
+                        var url='/vis/cit/'+json['info']['doi'];
+                        $('#cit-details').attr('href',url);
+                        $.each(json.summary, function (year, cited) {
+                            var num_year = parseInt(year);
+                            if (num_year >= start_year) {
+                                cit_xasis.push(year);
+                                cit_yaxix.push(cited['cited']);
+                                cit_cum.push(cited['total']);
+                                var past = cited['total'] - cited['cited'];
+                                cit_past.push(past);
                             }
-                        },
-                        legend: {
-                            data: ['累积量', '被引量', '总量']
-                        },
-                        xAxis: {
-                            data: cit_xasis
-                        },
-                        yAxis: {
-                            type: 'value',
-                            splitLine: {
-                                show: false
-                            }
-                        },
-                        dataZoom: [{
-                            start: 0
-                        }, {
-                            type: 'inside'
-                        }],
-                        series: [{
-                            name: '累积量',
-                            type: 'bar',
-                            data: cit_past,
-                            stack: '引用信息',
-                        }, {
-                            name: '被引量',
-                            type: 'bar',
-                            data: cit_yaxix,
-                            stack: '引用信息',
-                        }, {
-                            name: '总量',
-                            type: 'line',
-                            data: cit_cum,
-                            stack: '总信息',
-                        }]
-                    });
+                        });
+                        //设置citation图表
+                        citChart.setOption(option = {
+                            title: {
+                                text: ''
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            legend: {
+                                data: ['Accumulation', 'Citation', 'Total']
+                            },
+                            xAxis: {
+                                data: cit_xasis
+                            },
+                            yAxis: {
+                                type: 'value',
+                                splitLine: {
+                                    show: false
+                                }
+                            },
+                            dataZoom: [{
+                                start: 0
+                            }, {
+                                type: 'inside'
+                            }],
+                            series: [{
+                                name: 'Accumulation',
+                                type: 'bar',
+                                data: cit_past,
+                                stack: '引用信息',
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgba(255,144,128,1)'
+                                    }
+                                }
+                            }, {
+                                name: 'Citation',
+                                type: 'bar',
+                                data: cit_yaxix,
+                                stack: '引用信息',
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgba(0,191,183,1)'
+                                    }
+                                }
+                            }, {
+                                name: 'Total',
+                                type: 'line',
+                                data: cit_cum,
+                                stack: '总信息',
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgba(252,230,48,1)'
+                                    }
+                                }
+                            }]
+                        });
+                    }else{
+                        alert('Baidu scholar has not collected the citation info, sorry!');
+                        $('#cit-container').empty();
+                        $('#cit-container').html('<div id="cit-pic" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div>');
+                    }
                 });
-
+            }else if(ret=='TitleError'){
+                alert("Crossref has not collected the record!");
+                citload.hideLoading();
+                $('#cit-load').html('<div class="col-md-12"><div id="cit-showload" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div></div>');
             }else{
-                alert("No record found in CrossRef");
-                citChart.hideLoading();
+                alert("Doi input false!");
+                citload.hideLoading();
+                $('#cit-load').html('<div class="col-md-12"><div id="cit-showload" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div></div>');
             }
         }
     });

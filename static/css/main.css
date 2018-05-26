@@ -257,7 +257,11 @@ fieldset[disabled] .navbar-green .btn-link:focus {
 }
 
 .grey{
-    background-color: rgb(235, 235, 235);;
+    background-color: rgb(235, 235, 235);
+}
+
+.shallow-grey{
+    background-color: rgb(245,245,245)!important;
 }
 
 .jumbotron-custom h1{
@@ -522,7 +526,7 @@ fieldset[disabled] .navbar-green .btn-link:focus {
 }
 
 .textbox-custom .text-content{
-    margin: 8px 0 16px 0;
+    margin: 8px 0 8px 0;
     color:rgb(88, 96, 105);
     font-size: 12px;
 }
@@ -565,6 +569,13 @@ fieldset[disabled] .navbar-green .btn-link:focus {
     border-bottom-style: dotted;
     border-bottom-width:1px;
     color: rgb(210, 235, 227);
+}
+
+/*footer动态类*/
+.fixed-bottom{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .ta-c{text-align: center}
@@ -692,4 +703,157 @@ fieldset[disabled] .navbar-green .btn-link:focus {
     border:1px solid rgb(23, 126, 93);
     border-radius: 0px;
     margin-left: -5px;
+}
+
+.counter{
+    background-color: rgba(27, 31, 35, 0.08);
+    border-radius: 20px;
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    color: #586069;
+}
+
+.stars-download{
+    color: rgb(27, 146, 108);
+}
+
+.no-star-list{
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 24px;
+    padding: 24px;
+    background-color: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-radius: 3px;
+    box-shadow: inset 0 0 10px rgba(27,31,35,0.05);
+}
+
+.menu{
+    margin-top: 40px;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+}
+
+.menu-heading{
+    display: block;
+    padding: 11px 10px 11px 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #586069;
+    background-color: #f3f5f8;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.menu-item{
+    position: relative;
+    display: block;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.menu-item .selected{
+    font-weight: 600;
+    color: #24292e;
+    cursor: default;
+}
+
+.menu-item.selected::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    content: "";
+    background-color: #e36209;
+}
+
+.modify{
+    float: right;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline;
+    padding: 6px 16px;
+    margin: 6px;
+    background-color: rgb(31, 166, 122);
+    color: white;
+    border: 1px solid rgb(27, 146, 108);
+    border-radius: 5px;
+}
+
+.modify:hover{
+    cursor: pointer;
+    color: rgb(165, 216, 199);;
+}
+
+.button-green{
+    background-color: rgb(31, 166, 122) !important;
+    border: 1px solid rgb(27, 146, 108) !important;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 20px 0 10px 0!important;
+}
+
+.button-green:hover{
+    color: rgb(165, 216, 199) !important;
+}
+
+.avatar{padding-right: 30px;}
+.avatar div{margin-left: -30px;}
+.avatar dl{margin-left: 30px;}
+.avatar img{width:100%;border-radius: 6px}
+
+.form-group label{font-weight: 600 !important;}
+
+.stars-profile{padding-top: 66px}
+.stars-profile img{width: 100%;border-radius: 3px}
+.stars-profile label{font-size: 20px;color: rgb(102, 102, 102);}
+
+.display-none{display: none}
+.red-alert{
+    font-weight: 600;
+    color: red;
+}
+
+.mg-t-0{margin-top: 0px}
+.mg-t-30{margin-top: 30px}
+
+.mg-b-0{margin-bottom: 0px}
+.mg-b-60{margin-bottom: 60px}
+
+.font-14{font-size: 18px!important;}
+
+/* 竖直居中*/
+.parentElement{
+    position:relative;
+}
+
+.childElement{
+    position: absolute;
+    bottom: 50%;
+    right: 0px;
+}
+
+.childElement2{
+    position: absolute;
+    bottom: 0px;
+}
+
+/*加载图标*/
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('/static/pic/load.gif') 50% 50% no-repeat rgb(249,249,249);
 }

@@ -36,7 +36,6 @@ class refCrawl(threading.Thread):
                 tmp=self.doi_queue.get()
                 doi=tmp.split('+')[0]
                 cat=int(tmp.split('+')[1])
-                #node=refNode(doi,cat)
                 try:
                     wk = Works()
                     item = wk.doi(doi)
@@ -48,10 +47,10 @@ class refCrawl(threading.Thread):
                     item='doi-error'
                 if(item!='network-error' and item!='doi-error'):
                     info=parseInfo.parse_info(doi=doi,item=item)
-                    #subject_list=info['subject'].split(',')
                     self.lock.acquire()
                     if('subject' in info.keys()):
                         subject_list = info['subject'].split(',')
+                        #记录和统计subject信息
                         for s in subject_list:
                             if(s in self.ref_file['statistics']['subject'].keys()):
                                 self.ref_file['statistics']['count'][s]+=1
@@ -74,29 +73,18 @@ class refCrawl(threading.Thread):
                         parse_ref(item,cat,doi,self.ref_file,self.doi_queue)
                 self.doi_queue.task_done()
 
-def refdo(start_doi):
-    '''
-    ref_file = {'info': {},
-                'nodes': {},
-                'edges': {},
-                'subjectCount':0,
-                'count': {},
-                'subject': {}}
-    '''
+def refdo(start_doi,file_id):
     ref_file = {'info': {},
                 'nodes': {},
                 'edges': {},
                 'statistics':{'subjectCount':0,
                                 'count':{},
                                 'subject':{}}}
-    #start_doi = '10.1007/s10495-016-1250-5'
     start_cat = 0
     doi_queue = Queue()
-    # node_queue=Queue()
     pcd_start_doi = start_doi + '+' + str(start_cat)
     doi_queue.put(pcd_start_doi)
     file_lock=threading.Lock()
-
     start_time=datetime.now()
     print('start')
     for i in range(10):
@@ -110,7 +98,8 @@ def refdo(start_doi):
     print('crawl耗时: %s'%crawl_time)
 
     currentPath = os.getcwd() + '\\media\\ref\\'
-    json_output = currentPath + start_doi.replace("/", "_") + ".json"
+    filename=str(file_id)
+    json_output = currentPath + filename + ".json"
     with open(json_output, "w") as f:
         json.dump(ref_file, f)
     print("加载入文件完成...")

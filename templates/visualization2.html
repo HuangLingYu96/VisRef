@@ -1,0 +1,507 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization{% endblock %}
+
+{% block visual_navbar %}
+    <li class="dropdown active" id="visualization"><a href="/vis/" class="dropdown-toggle disabled" data-toggle="dropdown">
+        <i class="fa fa-television fa-fw"></i>Visualization
+        <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li class=""id="vis-ref"><a href="/vis/#ref">Reference</a></li>
+            <li class="" id="vis-cit"><a href="/vis/#cit">Citation</a></li>
+        </ul>
+    </li>
+{% endblock %}
+
+{% block header %}
+    <div class="row">
+        <div class="col-md-12 ta-c font-proxima">
+            <h1 class="font-museo"><i class="fa fa-television fa-fw"></i><b>Visualization</b></h1>
+            <p>Two kinds of visualization service are provided</p>
+            <p style="font-size: 14px"><a href="#ref">Reference</a> &nbsp; · &nbsp; <a href="#cit">Citation</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="jumbotron jumbotron-search">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                {% include "search_facet.html" %}
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container font-en">
+        <div class="section-card mg-t-0">
+            <h2 class="page-header mg-b-0" id="ref">Reference Visualization</h2>
+            <div class="row">
+                <div class="col-md-10">
+                    <section class="vis-search">
+                        <label for="ref-input"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only">搜索图标</span></label>
+                        <input id="ref-input" class="form-control input-lg vis-input" placeholder="Enter DOI, e.g., 10.1038/nature11003" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+                    </section>
+                </div>
+                <div class="col-md-2">
+                    <section class="vis-search">
+                        <button class="btn btn-warning btn-block vis-button button-lg" onclick="do_ref()">
+                            <i class="fa fa-television" aria-hidden="true"></i> Ref
+                        </button>
+                    </section>
+                </div>
+            </div>
+            <div id="ref-banner" class="row mg-t-30">
+                <div class="col-md-1"></div>
+                <div class="col-md-5 font-museo">
+                    <div class="ta-l" style="font-size: 72px;font-weight: 300;color: #2b669a">Service for</div>
+                    <div class="ta-l" style="font-size: 40px;color: #2a6496"><b>references visualization</b></div>
+                    <div>&nbsp;</div>
+                    <div style="font-size: 18px" class="font-en">
+                        <div>Reference visualization, a network <b>graph</b> is presented for one or two level reference.</div>
+                        <div>Statistic info of subjects can be also seen in a <b>pie</b> layout.</div>
+                        <div>You can click ' <a><b>Details</b></a> ' on the right for the detailed.</div>
+                        <div>Example is in the right banner.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="myCarousel" class="carousel slide">
+                        <!-- 轮播（Carousel）项目 -->
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img src="/static/pic/force.png" alt="First slide" height="350px" width="555px">
+                            </div>
+                            <div class="item">
+                                <img src="/static/pic/pie.png" alt="Second slide" height="350px" width="555px">
+                            </div>
+                        </div>
+                        <!-- 轮播（Carousel）导航 -->
+                        <a class="carousel-control left vis-banner-control" href="#myCarousel"
+                            data-slide="prev">&lsaquo;
+                        </a>
+                        <a class="carousel-control right vis-banner-control" href="#myCarousel"
+                            data-slide="next">&rsaquo;
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="ref-load" class="row mg-t-30 display-none">
+                <div class="col-md-12">
+                    <div>&nbsp;</div>
+                    <div id="ref-showload" style="width: 100%;height:350px;"></div>
+                </div>
+            </div>
+            <div id="ref-main" class="row mg-t-30 display-none">
+                <div class="col-md-7">
+                    <div>&nbsp;</div>
+                    <div id="ref-pic" style="width: 100%;height:350px;"></div>
+                </div>
+                <div class="col-md-5">
+                    <div class="widget-custom font-en">
+                        <h4 class="title-custom"><a target="_blank" href="#" id="ref-details" style="color: rgb(230, 126, 34);text-decoration: none">Details</a></h4>
+                        <p>DOI: <span class="content-custom" id="ref-doi">Loading...</span></p>
+                        <p>Title: <span class="content-custom" id="ref-title">Loading...</span></p>
+                        <p>Date: <span class="content-custom" id="ref-date">Loading...</span></p>
+                        <p>Publisher: <span class="content-custom" id="ref-publisher">Loading...</span></p>
+                        <p>Cited: <span class="content-custom" id="ref-cited">Loading...</span></p>
+                        <p>Author: <span class="content-custom" id="ref-author">Loading...</span></p>
+                        <p>Subject: <span class="content-custom" id="ref-subject">Loading...</span></p>
+                        <p>Link: <a class="content-custom" id="ref-link" href="#" target="_blank">Loading...</a></p>
+                    </div>
+                </div>
+            </div>
+            <h2 class="page-header mg-b-0" id="cit">Citation Visualization</h2>
+            <div class="row">
+                <div class="col-md-10">
+                    <section class="vis-search">
+                        <label for="cit-input"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only">搜索图标</span></label>
+                        <input id="cit-input" class="form-control input-lg vis-input" placeholder="Enter DOI, e.g., 10.1038/nature11003" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1" required>
+                    </section>
+                </div>
+                <div class="col-md-2">
+                    <section class="vis-search">
+                        <button class="btn btn-info btn-block vis-button button-lg" onclick="do_cit()">
+                            <i class="fa fa-television" aria-hidden="true"></i> Cit
+                        </button>
+                    </section>
+                </div>
+            </div>
+            <div id="cit-banner" class="row mg-t-30">
+                <div class="col-md-1"></div>
+                <div class="col-md-5 font-museo">
+                    <div>&nbsp;</div>
+                    <div class="ta-l" style="font-size: 72px;font-weight: 300;color: #2b669a">Service for</div>
+                    <div class="ta-l" style="font-size: 40px;color: #2a6496"><b>citations visualization</b></div>
+                    <div>&nbsp;</div>
+                    <div style="font-size: 18px" class="font-en">
+                        <div>Citation visualization, a chart combined with <b>bar</b> layout and <b>line</b> layout is displayed.</div>
+                        <div>Example is shown on the right.</div>
+                    </div>
+                </div>
+                <div class="col-md-6"><img src="/static/pic/citation.png" width="555px" height="350px"></div>
+            </div>
+            <div id="cit-load" class="row mg-t-30 display-none">
+                <div class="col-md-12">
+                    <div id="cit-showload" style="width: 100%;height:350px;"></div>
+                </div>
+            </div>
+            <div id="cit-main" class="row mg-t-30 display-none">
+                <div class="col-md-7" id="cit-container">
+                    <div id="cit-pic" style="width: 100%;height:350px;"></div>
+                </div>
+                <div class="col-md-5 ta-l">
+                    <div class="cit-widget-custom font-en">
+                        <h4 class="title-custom"><a target="_blank" href="#" id="cit-details" style="color: #2AABD2;text-decoration: none">Details</a></h4>
+                        <p>DOI: <span class="content-custom" id="cit-doi">Loading...</span></p>
+                        <p>Title: <span class="content-custom" id="cit-title">Loading...</span></p>
+                        <p>Date: <span class="content-custom" id="cit-date">Loading...</span></p>
+                        <p>Publisher: <span class="content-custom" id="cit-publisher">Loading...</span></p>
+                        <p>Cited: <span class="content-custom" id="cit-cited">Loading...</span></p>
+                        <p>Reference: <span class="content-custom" id="cit-subject">Loading...</span></p>
+                        <p>Author: <span class="content-custom" id="cit-author">Loading...</span></p>
+                        <p>Link: <a class="content-custom" id="cit-link" href="#" target="_blank">Loading...</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+function do_ref() {
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
+    $('#ref-banner').hide();
+    //防止二次请求错误，所以先清空一下
+    $('#ref-load').empty();
+    $('#ref-load').html('<div class="col-md-12"><div>&nbsp;</div><div id="ref-showload" style="width: 100%;height:350px;"></div></div>');
+    $('#ref-load').show();
+    var refload=echarts.init(document.getElementById('ref-showload'));
+    //alert('yes');
+    refload.showLoading();
+
+    var keyword=$('#ref-input').val();
+    //alert(keyword);
+    if(keyword==''){
+        keyword='10.1007/s10495-016-1250-5';
+    }
+    $.ajax({
+        type:"post",
+        url:"/vis/ref",
+        data:{
+            keyword:keyword
+        },
+        error:function () {
+            alert("Failed！");
+        },
+        success:function (ret) {
+            //alert(ret);
+            if(ret!='TitleError'&& ret!='DoiError') {
+                //隐藏加载框
+                refload.hideLoading();
+                $('#ref-load').hide();
+                //信息框
+                $('#ref-main').show();
+                var myChart = echarts.init(document.getElementById('ref-pic'), 'shine');
+                var filename=ret.toString();
+                var ref_file='/media/ref/'+filename+'.json';
+
+                $.getJSON(ref_file,function (json) {
+                    var details='/vis/ref/'+json['info']['doi'];
+                    $('#ref-details').attr('href',details);
+                    $('#ref-doi').html(json['info']['doi']);
+                    $('#ref-title').html(json['info']['title']);
+                    $('#ref-date').html(json['info']['date']);
+                    $('#ref-publisher').html(json['info']['publisher']);
+                    $('#ref-cited').html(json['info']['cited']);
+                    $('#ref-author').html(json['info']['author']);
+                    $('#ref-subject').html(json['info']['subject']);
+                    $('#ref-link').html(json['info']['link']);
+                    $('#ref-link').attr('href',json['info']['link']);
+
+                    var ref_author_list=json['info']['author'].split(',');
+                    if(ref_author_list.length>3) {
+                        var ref_author = ref_author_list[0] + ',' + ref_author_list[1] + ',' + ref_author_list[2] + ' ...';
+                        $('#ref-author').html(ref_author);
+                    }
+
+                    var categories = [];
+                    for (var i = 0; i < 3; i++) {
+                        categories[i] = {
+                            name: '类目' + i
+                        };
+                    };
+
+                    var doi_record=[];
+                    var data=[];
+                    var start_info={
+                        name:json['info']['doi'],
+                        doi:json['info']['doi'],
+                        title:json['info']['title'],
+                        link:json['info']['link'],
+                        publisher:json['info']['publisher'],
+                        date:json['info']['date'],
+                        cited:json['info']['cited'],
+                        author:json['info']['author'],
+                        subject:json['info']['subject'],
+                        category:0,
+                        symbolSize:40
+                    };
+                    data.push(start_info);
+                    doi_record.push(json['info']['doi']);
+
+                    var edge=[];
+                    var source=[];
+                    var target=[];
+                    $.each(json.edges,function (index,item) {
+                        var tmp_edge={
+                            source: item['source'],
+                            target: item['target']
+                        };
+                        edge.push(tmp_edge);
+                        source.push(item['source']);
+                        target.push(item['target']);
+                    });
+
+                    $.each(json.nodes,function (index,item) {
+                        var tmp_doi=item['doi'];
+                        if(doi_record.indexOf(tmp_doi)!=-1){
+                            console.log(tmp_doi+item['cat']);
+                        }else {
+                            if(source.indexOf(tmp_doi)==-1 & target.indexOf(tmp_doi)==-1){
+                                console.log(tmp_doi+' has no target and source');
+                            }else {
+                                var s = 0;
+                                if (item['cat'] == 1) {
+                                    s = 10;
+                                } else {
+                                    s = 8;
+                                }
+                                var tmp_info = {
+                                    name: item['doi'],
+                                    doi: item['doi'],
+                                    title: item['title'],
+                                    link: item['link'],
+                                    publisher: item['publisher'],
+                                    date: item['date'],
+                                    cited: item['cited'],
+                                    author: item['author'],
+                                    subject: item['subject'],
+                                    category: item['cat'],
+                                    symbolSize: s
+                                };
+                                data.push(tmp_info);
+                                doi_record.push(item['doi']);
+                            }
+                        }
+                    });
+
+                    /*
+                    var edge=[];
+                    $.each(json.edges,function (index,item) {
+                        var tmp_edge={
+                            source: item['source'],
+                            target: item['target']
+                        };
+                        edge.push(tmp_edge);
+                    });*/
+
+                    option = {
+                        tooltip: {},
+                        animationDuration: 1500,
+                        animationEasingUpdate: 'quinticInOut',
+                        series: [
+                            {
+                                name: 'Reference Network',
+                                type: 'graph',
+                                layout: 'force',
+                                data: data,
+                                links: edge,
+                                categories: categories,
+                                //focusNodeAdjacency:true,
+                                roam: true,
+                                label: {
+                                    normal: {
+                                        //show:true,
+                                        position: 'right'
+                                    }
+                                },
+                                force: {
+                                    repulsion: 10,
+                                    layoutAnimation:false
+                                }
+                            }
+                        ]
+                    };
+
+                    myChart.setOption(option,true);
+                });
+
+            }else{
+                alert("Crossref has not collected the record!");
+                refload.hideLoading();
+                $('#ref-load').html('<div class="col-md-12"><div>&nbsp;</div><div id="cit-showload" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div></div>');
+            }
+        }
+    });
+}
+
+function do_cit(){
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
+    $('#cit-banner').hide();
+    //防止二次请求错误，所以先清空一下
+    $('#cit-load').empty();
+    $('#cit-load').html('<div class="col-md-12"><div id="cit-showload" style="width: 100%;height:350px;"></div></div>');
+    $('#cit-load').show();
+    var citload=echarts.init(document.getElementById('cit-showload'));
+    citload.showLoading();
+
+    var keyword=$('#cit-input').val();
+    //设置默认doi
+    if(keyword==''){
+        keyword='10.1038/nature11003';
+    }
+    $.ajax({
+        type:"post",
+        url:"/vis/cit",
+        data:{
+            keyword:keyword
+        },
+        error:function () {
+            alert("Failed！");
+        },
+        success:function (ret) {
+            //alert(ret);
+            if(ret!='TitleError'&& ret!='DoiError') {
+                //隐藏加载框
+                citload.hideLoading();
+                $('#cit-load').hide();
+                //信息框
+                $('#cit-main').show();
+                var citChart = echarts.init(document.getElementById('cit-pic'));
+
+                var filename=ret.toString();
+                var info_file='/media/info/'+filename+'.json';
+                var doi='';
+                var cited=0;
+                $.getJSON(info_file,function (json) {
+                    //基本信息
+                    $('#cit-doi').html(json['doi']);
+                    $('#cit-title').html(json['title']);
+                    $('#cit-date').html(json['time']);
+                    $('#cit-publisher').html(json['container_title']);
+                    $('#cit-cited').html(json['is_referenced_by_count']);
+                    $('#cit-author').html(json['author']);
+                    $('#cit-subject').html(json['reference_count']);
+                    $('#cit-link').html(json['link']);
+                    $('#cit-link').attr('href',json['link']);
+                    //doi和cited
+                    doi=json['doi'];
+                    cited=parseInt(json['is_referenced_by_count']);
+                });
+                var cit_file='/media/cit/'+filename+'.json';
+                $.getJSON(cit_file,function (json) {
+                    var cit_xasis = [];
+                    var cit_yaxix = [];
+                    var cit_past=[];
+                    var cit_cum=[];
+
+                    if(!jQuery.isEmptyObject(json['summary'])) {
+                        var url='/vis/cit/'+doi;
+                        $('#cit-details').attr('href',url);
+                        $.each(json.summary, function (year, cited) {
+                            if (year != 'Unknown') {
+                                cit_xasis.push(year);
+                                cit_yaxix.push(cited['cited']);
+                                cit_cum.push(cited['total']);
+                                var past = cited['total'] - cited['cited'];
+                                cit_past.push(past);
+                            }
+                        });
+                        //设置citation图表
+                        citChart.setOption(option = {
+                            title: {
+                                text: ''
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            legend: {
+                                data: ['Accumulation', 'Citation', 'Total']
+                            },
+                            xAxis: {
+                                data: cit_xasis
+                            },
+                            yAxis: {
+                                type: 'value',
+                                splitLine: {
+                                    show: false
+                                }
+                            },
+                            dataZoom: [{
+                                start: 0
+                            }, {
+                                type: 'inside'
+                            }],
+                            series: [{
+                                name: 'Accumulation',
+                                type: 'bar',
+                                data: cit_past,
+                                stack: '引用信息',
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgba(255,144,128,1)'
+                                    }
+                                }
+                            }, {
+                                name: 'Citation',
+                                type: 'bar',
+                                data: cit_yaxix,
+                                stack: '引用信息',
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgba(0,191,183,1)'
+                                    }
+                                }
+                            }, {
+                                name: 'Total',
+                                type: 'line',
+                                data: cit_cum,
+                                stack: '总信息',
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgba(252,230,48,1)'
+                                    }
+                                }
+                            }]
+                        });
+                    }else{
+                        alert('No citation information');
+                        $('#cit-container').empty();
+                        $('#cit-container').html('<div id="cit-pic" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div>');
+                    }
+                });
+            }else if(ret=='TitleError'){
+                alert("Crossref has not collected the record!");
+                citload.hideLoading();
+                $('#cit-load').html('<div class="col-md-12"><div id="cit-showload" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div></div>');
+            }else{
+                alert("DOI input false!");
+                citload.hideLoading();
+                $('#cit-load').html('<div class="col-md-12"><div id="cit-showload" style="width: 100%;height:350px;"><span style="position:absolute;top:45%;left:30%;font-size:30px;font-weight:500;">No Citation Information</span></div></div>');
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

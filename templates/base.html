@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <title>{% block title %}默认标题{% endblock %}| VisualRef</title>
+    <title>{% block complete %}{% block title %}默认标题{% endblock %}| VisualRef{% endblock %}</title>
     <link rel="shortcut icon" href="/static/img/favicon.ico">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/feeds/rss/">
     <link rel="alternate" type="application/atom+xml" title="Atom" href="/blog/feeds/atom/">
@@ -20,14 +20,16 @@
     <script src="{% static "js/echarts.js" %}"></script>
     <script src="{% static "js/dataTool.js" %}"></script>
     <script src="{% static "js/shine.js" %}"></script>
+    <script src="{% static "js/csrf.js" %}"></script>
 
     <!--[if lt IE 9]>
     <script src="/static/js/html5shiv.js"></script>
     <script src="/static/js/respond.min.js"></script>
     <![endif]-->
+
 </head>
 
-<body style="background-color: rgb(245,245,245)">
+<body>
 
 <div class="navbar navbar-green navbar-static-top" role="navigation" style="margin-bottom: 0px !important;">
     <div class="container">

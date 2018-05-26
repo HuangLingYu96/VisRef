@@ -1,17 +1,14 @@
 {% if request.user.is_authenticated %}
 <ul class="nav navbar-nav navbar-right font-en">
-    <li class="dropdown" id="usr"><a href="/indiv/" class="dropdown-toggle disabled" data-toggle="dropdown">
+    <li class="dropdown" id="usr"><a href="#" class="dropdown-toggle disabled" data-toggle="dropdown">
         <i class="fa fa-user fa-fw"></i>{{ request.user.username }}
         <b class="caret"></b></a>
         <ul class="dropdown-menu">
             <li class="sign-facet-li">Signed in as</li>
             <li class="sign-facet-li" style="font-weight: 600">{{ request.user.username }}</li>
             <li class="divider"></li>
-            <li class="" id="usr-summary"><a href="/indiv/{{ request.user.username }}/star/">Your stars</a></li>
-            <li class="" id="usr-history"><a href="/indiv/{{ request.user.username }}/star_summary/">Your summary</a></li>
-            <li class="" id="usr-history"><a href="/indiv/{{ request.user.username }}/star_search/">Your search</a></li>
-            <li class="" id="usr-history"><a href="/indiv/{{ request.user.username }}/star_ref/">Your reference</a></li>
-            <li class="" id="usr-history"><a href="/indiv/{{ request.user.username }}/star_cit/">Your citation</a></li>
+            <li class="" id="usr-profile"><a href="/indiv/{{ request.user.username }}/profile/">Your profile</a></li>
+            <li class="" id="usr-stars"><a href="/indiv/{{ request.user.username }}/stars/">Your stars</a></li>
             <li class="divider"></li>
             <li class="" id="logout"><a href="/logout">Sign out</a></li>
         </ul>

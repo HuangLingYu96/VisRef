@@ -15,18 +15,8 @@ def titletodoi(keyword):
     tmp = tmp.replace(' ', '').lower()
     tmp = re.sub(r'\W', '', tmp)
     # print('tmp: ' + tmp)
-    flag='no'
     if (title == tmp):
-        flag='yes'
-    else:
-        if (title in tmp):
-            flag = 'yes'
-        elif (tmp in title):
-            flag = 'yes'
-        else:
-            flag = 'no'
-    if(flag=='yes'):
         doi=items[0]['DOI']
         return doi
     else:
-        return 'None'
+        return None

@@ -31,10 +31,10 @@
         {% csrf_token %}
         <dl class="form-group" style="margin-top: 0;">
             <dt>
-                <label style="margin-bottom: 5px;" for="username">Username</label>
+                <label style="margin-bottom: 5px;" for="username">Username or email address</label>
             </dt>
             <dd>
-                <input id="username" class="form-control" name="username" value="{{ name }}" placeholder="Username" type="text" required>
+                <input id="username" class="form-control" name="username" value="{{ name }}" placeholder="Username or email" type="text" required>
             </dd>
         </dl>
         <dl class="form-group" style="margin-top: 0;">
@@ -47,11 +47,19 @@
         </dl>
         <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
     </form>
+    {% if error %}
+        <dl class="form-group" style="margin-top: 0;">
+            <dt>
+                <label style="margin-bottom: 5px;color: red!important;">Username or email does not match with password!</label>
+            </dt>
+        </dl>
+    {% endif %}
 </div>
 <div>&nbsp;</div>
 <div class="login-footer">
     <p style="padding-bottom: 0">New to VisualRef? <a href="/register">Create an account</a>.</p>
     <p style="padding-top: 0">Forgot password? <a href="/password_reset">Find</a>.</p>
+    <p style="padding-top: 0;margin-top: -15px">Here to <a href="/">Home</a> page.</p>
 </div>
 </body>
 </html>

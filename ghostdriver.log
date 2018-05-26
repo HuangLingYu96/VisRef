@@ -1,7 +1,8 @@
-[INFO  - 2017-12-04T08:19:23.510Z] GhostDriver - Main - running on port 54422
-[INFO  - 2017-12-04T08:19:24.849Z] Session [d6996fb0-d8cb-11e7-92fc-4f7eda9d0772] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
-[INFO  - 2017-12-04T08:19:24.849Z] Session [d6996fb0-d8cb-11e7-92fc-4f7eda9d0772] - page.customHeaders:  - {}
-[INFO  - 2017-12-04T08:19:24.849Z] Session [d6996fb0-d8cb-11e7-92fc-4f7eda9d0772] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-12-04T08:19:24.849Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: d6996fb0-d8cb-11e7-92fc-4f7eda9d0772
-[INFO  - 2017-12-04T08:24:23.527Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
-[INFO  - 2017-12-04T08:24:23.535Z] SessionManagerReqHand - _cleanupWindowlessSessions - Deleted Session 'd6996fb0-d8cb-11e7-92fc-4f7eda9d0772', because windowless
+[INFO  - 2018-05-15T06:42:56.147Z] GhostDriver - Main - running on port 51708
+[INFO  - 2018-05-15T06:42:57.339Z] Session [33e413f0-580b-11e8-b4bf-99f8b5d5e20c] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2018-05-15T06:42:57.339Z] Session [33e413f0-580b-11e8-b4bf-99f8b5d5e20c] - page.customHeaders:  - {}
+[INFO  - 2018-05-15T06:42:57.339Z] Session [33e413f0-580b-11e8-b4bf-99f8b5d5e20c] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2018-05-15T06:42:57.339Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 33e413f0-580b-11e8-b4bf-99f8b5d5e20c
+[ERROR - 2018-05-15T06:42:59.014Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1526366578967
+
+  phantomjs://platform/console++.js:263 in error

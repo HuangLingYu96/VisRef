@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block  complete %}Your profile{% endblock %}
+
+{% block jumbotron %}
+    <div class="container">
+        <div>&nbsp;</div>
+        <div class="row font-en">
+            <div class="col-md-1"></div>
+            <div class="col-md-2" style="float: left!important">
+                <nav class="menu">
+                    <h3 class="menu-heading">Personal settings</h3>
+                    <div class="menu-item selected">Profile</div>
+                    <div class="menu-item"><a href="password_setting">Password</a></div>
+                </nav>
+            </div>
+            <div class="col-md-5">
+                <div style="margin-left: 15px">
+                    <h2 class="page-header">Profile<div id="modify" class="modify" onclick="modify('{{ request.user.username }}','{{ request.user.email }}')">Modify</div></h2>
+                    <dl id="success" class="form-group" style="display: none">
+                        <dt>
+                            <span style="font-weight: 600!important;color: rgb(31, 166, 122)">Profile modified successfully!</span>
+                        </dt>
+                    </dl>
+                    <dl id="fail" class="form-group" style="display: none">
+                        <dt>
+                            <span style="font-weight: 600!important;color: red">Profile modification failed!</span>
+                        </dt>
+                    </dl>
+                    <dl class="form-group">
+                        <dt>
+                            <label for="name">Name</label>
+                        </dt>
+                        <dd>
+                            <input id="name" class="form-control" name="name" value="{{ request.user.username }}" placeholder="{{ request.user.username }}" type="text" onblur="checkUsername()">
+                        </dd>
+                        <dd id="username-alert" class="display-none">
+                            <span class="red-alert">Username has been occupied!</span>
+                        </dd>
+                    </dl>
+                    <dl class="form-group">
+                        <dt>
+                            <label for="email">Email</label>
+                        </dt>
+                        <dd>
+                            <input id="email" class="form-control" name="email" value="{{ request.user.email }}" placeholder="{{ request.user.email }}" type="email" onblur="isEmail(document.getElementById('email').value)" disabled>
+                        </dd>
+                        <dd id="email-alert" class="display-none">
+                            <span class="red-alert">Email has been occupied!</span>
+                        </dd>
+                        <dd id="notEmail" class="display-none">
+                            <span class="red-alert">Email address illegal!</span>
+                        </dd>
+                    </dl>
+
+                    <dl class="form-group">
+                        <dt>
+                            <label for="birth">Birth</label>
+                        </dt>
+                        <dd>
+                            <input id="birth" class="form-control" name="birth" type="date" style="height: 46px" value="{{ request.user.profile.birth_date }}">
+                        </dd>
+                    </dl>
+                    <dl class="form-group">
+                        <dt>
+                            <label for="bio">Bio</label>
+                        </dt>
+                        <dd>
+                            {% if request.user.profile.bio == '' %}
+                            <textarea id="bio" class="form-control" name="bio" placeholder="Introduce yourself briefly."></textarea>
+                            {% else %}
+                            <textarea id="bio" class="form-control" name="bio" placeholder="{{ request.user.profile.bio }}">{{ request.user.profile.bio }}</textarea>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="form-group">
+                        <dt>
+                            <label for="company">Company</label>
+                        </dt>
+                        <dd>
+                            <input id="company" class="form-control" name="company" value="{{ request.user.profile.company }}" placeholder="{{ request.user.profile.company }}" type="text">
+                        </dd>
+                    </dl>
+                    <dl class="form-group">
+                        <dt>
+                            <label for="location">Location</label>
+                        </dt>
+                        <dd>
+                            <input id="location" class="form-control" name="location" value="{{ request.user.profile.loaction }}" placeholder="{{ request.user.profile.loaction }}" type="text">
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-md-3 avatar">
+                <div><h2 class="page-header">&nbsp;</h2></div>
+                <dl class="form-group">
+                    <dt>
+                        <label for="pic">Profile picture</label>
+                    </dt>
+                    <dd>
+                        <img src="/media/usr/{{ request.user.id }}.jpg" onerror="javascript:this.src='/media/usr/user.png'">
+                    </dd>
+                </dl>
+                <dl class="form-group">
+                    <dt>
+                        <input type="file" id="btn-file">
+                        <button class="btn btn-lg btn-block button-green" type="submit" onclick="uploadAvatar()">Upload your avatar</button>
+                    </dt>
+                </dl>
+            </div>
+        </div>
+        <div>&nbsp;</div>
+    </div>
+
+<script>
+//alert('hello');
+var birth='{{ request.user.profile.birth_date }}';
+//alert(birth);
+var mth=birth.split('. ')[0];
+var sb=birth.split('. ')[1];
+var mths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+var month=mths.indexOf(mth)+1;
+//alert(month);
+var sb2=sb.split(', ');
+var day=sb2[0];
+var year=sb2[1];
+var bithday=year+'-'+month.toString()+'-'+day;
+//alert(bithday);
+$('#birth').val(bithday);
+
+var name_flag=false;
+var email_flag=true;
+    //修改个人信息
+    function modify(old_username,old_email) {
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+        var email=$('#email').val();
+        var name=$('#name').val();
+        var birth=$('#birth').val();
+        var bio=$('#bio').val();
+        var company=$('#company').val();
+        var location=$('#location').val();
+
+        $.ajax({
+            type: "post",
+            url: "/profile_modify",
+            data: {
+                old_username: old_username,
+                old_email: email,
+                name: name,
+                email: email,
+                birth: birth,
+                bio: bio,
+                company: company,
+                location: location
+            },
+            error: function () {
+                $('#fail').show();
+                $('#success').hide();
+            },
+            success: function (ret) {
+                if(ret=='yes') {
+                    $('#fail').hide();
+                    $('#success').show();
+                }else{
+                    //alert('no');
+                    $('#fail').show();
+                    $('#success').hide();
+                }
+            }
+        });
+
+    }
+
+    //检查用户名占用
+    function checkUsername() {
+        var old_name='{{ request.user.username }}';
+        var name=$('#name').val();
+        if(name==old_name){
+            $('#username-alert').hide();
+            name_flag=true;
+        }else{
+            $.ajax({
+                type:"post",
+                url:"/check/username",
+                data:{
+                    username:name
+                },
+                error:function (ret) {
+                    alert('Request failed!')
+                },
+                success:function (ret) {
+                    if(ret=='existed'){
+                        $('#username-alert').show();
+                    }else{
+                        $('#username-alert').hide();
+                        name_flag=true;
+                    }
+                }
+            })
+        }
+    }
+
+    //检查邮箱地址是否合法
+    function isEmail(textEmail) {
+        var apos=textEmail.indexOf("@",1);
+        if(apos==-1) {
+            $('#notEmail').show();
+            $('#email-alert').hide();
+        }
+        else if(textEmail.indexOf(".",apos+2)==-1){
+            $('#notEmail').show();
+            $('#email-alert').hide();
+        }
+        else{
+            //若合法则检查是否占用
+            $('#notEmail').hide();
+            var old_email='{{ request.user.email }}';
+            if(old_email==textEmail){
+                $('#email-alert').hide();
+                email_flag=true;
+            }else{
+                $.ajax({
+                    type:"post",
+                    url:"/check/email",
+                    data:{
+                        email:textEmail
+                    },
+                    error:function (ret) {
+                        alert('Request failed!')
+                    },
+                    success:function (ret) {
+                        if(ret=='existed'){
+                            $('#email-alert').show();
+                        }else{
+                            $('#email-alert').hide();
+                            email_flag=true;
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    //上传头像
+    function uploadAvatar() {
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+        //$('#btn-file').click();
+        var formData=new FormData();
+        var img=document.getElementById('btn-file').files[0];
+        formData.append('img',img);
+        //alert('hello');
+        $.ajax({
+            type:"post",
+            url:"/avatar_modify",
+            data:formData,
+            processData: false,  // tell jquery not to process the data
+            contentType: false, // tell jquery not to set contentType
+            error:function () {
+                alert('failed');
+            },
+            success:function (ret) {
+                alert('Avatar has been modified!');
+                location.reload();
+            }
+        })
+    }
+</script>
+{% endblock %}

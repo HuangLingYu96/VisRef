@@ -21,7 +21,7 @@
                     <form action="/search/" method="get">
                         <span class="search-style">
                             <i class="fa fa-search fa-fw search-icon"></i>
-                            <input id="search" class="form-control form-custom" name="search" value="{{ keyword }}" type="text" placeholder="Please input keyword, DOI or title，eg:: medical, 10.1007/s10495-016-1250-5, medical glossy" required>
+                            <input id="search" class="form-control form-custom" name="search" value="{{ keyword }}" type="text" placeholder="Search VisRef" required>
                         </span>
                         <span>
                             <button type="submit" class="button-custom" title="" >Search&nbsp;</i>
@@ -32,61 +32,53 @@
             </div>
         </div>
     </div>
-    {% if results %}
-    <div>&nbsp;</div>
-    {% else %}
-     <div style="height: 80px;">&nbsp;</div>
-    {% endif %}
 {% endblock %}
 
 {% block content %}
     {% if results %}
     <div class="content-underlay"></div>
     <div class="container">
-        <section class="search-section">
+        <section class="search-section" style="background-color: rgb(245,245,245)">
             <h2 class="page-header font-en">Search Result of "<b> {{ keyword }} </b>"</h2>
             <div class="font-en">
-                {% for index,content in results.items %}
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="row"><div class="col-md-12"><a href="{{ content.link }}" target="_blank">{{ content.title }}</a></div></div>
-                            <div class="row"><div class="col-md-12">{{ content.doi }}</div></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    {% if content.type != "Unknown" %}
-                                        <b>{{ content.type }}</b>&nbsp;published&nbsp;
-                                    {% endif %}
-                                    {% if content.time != "Unknown" %}
-                                        <b>{{ content.time }}</b>&nbsp;
-                                    {% endif %}
-                                    {% if content.journal != "Unknown" %}
-                                        in&nbsp;<b>{{ content.journal }}</b>&nbsp;
-                                    {% endif %}
-                                    {% if content.volume != "Unknown" %}
-                                        volume&nbsp;<b>{{ content.volume }}</b>&nbsp;
-                                    {% endif %}
-                                    {% if content.issue != "Unknown" %}
-                                        issue&nbsp;<b>{{ content.issue }}</b>&nbsp;
-                                    {% endif %}
-                                    {% if content.page_from != "Unknown" %}
-                                        on pages&nbsp;<b>{{ content.page_from }}</b>&nbsp;
-                                    {% endif %}
-                                    {% if content.page_to != "Unknown" %}
-                                        to&nbsp;<b>{{ content.page_to }}</b>&nbsp;
-                                    {% endif %}
+                {% load pagination_tags %}
+                {% autopaginate results 10 %}
+                    {% for content in results %}
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="row"><div class="col-md-12"><a href="{{ content.link }}" target="_blank">{{ content.title }}</a></div></div>
+                                <div class="row"><div class="col-md-12">{{ content.doi }}</div></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% if content.sea_type != "Unknown" %}
+                                            <b>{{ content.sea_type }}</b>&nbsp;published&nbsp;
+                                        {% endif %}
+                                        {% if content.time != "Unknown" %}
+                                            <b>{{ content.time }}</b>&nbsp;
+                                        {% endif %}
+                                        {% if content.publisher != "Unknown" %}
+                                            in&nbsp;<b>{{ content.publisher }}</b>&nbsp;
+                                        {% endif %}
+                                        {% if content.volume != "Unknown" %}
+                                            is referenced by&nbsp;<b>{{ content.volume }}</b>&nbsp;times
+                                        {% endif %}
+                                        {% if content.page_from != "Unknown" %}
+                                            on pages&nbsp;<b>{{ content.page_from }}</b>&nbsp;
+                                        {% endif %}
+                                    </div>
                                 </div>
+                                {% if content.author != 'Unknown' and content.author != '' %}
+                                <div class="row"><div class="col-md-12">Authors: {{ content.author }}</div></div>
+                                {% endif %}
                             </div>
-                            {% if content.author != 'Unknown' %}
-                            <div class="row"><div class="col-md-12">{{ content.author }}</div></div>
-                            {% endif %}
+                        <!--
+                            <div class="col-md-2"><a href="/summary/?summary={{ content.doi }}" target="_blank">>>Summary</a></div>
+                            -->
+                            <div class="col-md-2"><a href="#" onclick="url_process('{{ content.doi }}')">>>Summary</a></div>
                         </div>
-                        <div class="col-md-2"><a href="/summary/?summary={{ content.doi }}" target="_blank">>>Summary</a></div>
-                        {% if request.user.is_authenticated %}
-                        <div class="col-md-2"><i id="{{ content.doi }}" class="fa fa-star hover-like" aria-hidden="true" onclick="like({{ content.mark}})" style="color: #d1d5da"></i></div>
-                        {% endif %}
-                    </div>
-                    <hr>
-                {% endfor %}
+                        <hr>
+                    {% endfor %}
+                {% paginate %}
             </div>
         </section>
     </div>
@@ -94,35 +86,12 @@
     {% endif %}
 
 <script>
-function like(doi) {
-    $.ajaxSetup({
-        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
-    })
-
-    //alert('hello');
+function url_process(doi) {
     //alert(doi);
-    //alert(typeof(doi));
-
-    $.ajax({
-        type:"post",
-        //url:"/postRefDoi",
-        url:"/star",
-        data:{
-            source:'Search',
-            doi:doi
-        },
-        error:function () {
-            alert("Collection Failed!");
-        },
-        success:function (ret) {
-            if(ret=='existed'){
-                alert('You have already liked it!')
-            }else{
-                alert('Successful Collection！')
-            }
-            document.getElementById(doi).setAttribute('style','color:#e36209');
-        }
-    });
+    var p_doi=doi.replace(new RegExp(';','gm'),'%3B');
+    var url="/summary/?summary=" +p_doi;
+    //alert(url);
+    window.open(url);
 }
 </script>
 {% endblock %}
